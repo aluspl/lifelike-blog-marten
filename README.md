@@ -6,8 +6,9 @@ Ten projekt demonstruje wykorzystanie biblioteki **Marten** (Event Store & Proje
 
 W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 - `PostCreated`: Inicjalizacja wpisu.
-- `PostPublished`: Opublikowanie wpisu (z datą).
 - `PostUpdated`: Zmiana tytułu lub treści.
+- `PostPublished`: Opublikowanie wpisu.
+- `PostUnpublished`: Cofnięcie publikacji.
 
 **Projekcje (Read Models):**
 - `PostDetails`: Pełny stan posta wraz z treścią, agregowany inline.
@@ -15,9 +16,14 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 
 ## Struktura projektu
 
+### Usługi (Core Services)
 - `src/Blog.Api`: Web API w .NET 10 korzystające z Martena do zapisu zdarzeń i odczytu projekcji.
-- `src/Blog.Processor.Python`: Skrypt obserwujący bazę danych PostgreSQL i logujący projekcje Martena.
-- `scripts/tester.py`: Interaktywny i skryptowalny CLI tester do testowania flow API.
+- `src/Blog.Processor.Python`: Serwis tła (Background Worker) w Pythonie, który demonstruje **Polyglot Persistence** — bezpośrednio obserwuje tabele Martena w PostgreSQL i loguje stan projekcji.
+
+### Narzędzia (Tooling)
+- `scripts/tester.py`: Zaawansowany, interaktywny i skryptowalny CLI tester do weryfikacji całego flow API (obsługuje orchestrację Docker Compose).
+
+### Infrastruktura
 - `docker/`: Konfiguracja Dockera (Dockerfile i docker-compose).
 
 ## Jak uruchomić?
@@ -28,38 +34,50 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
    docker compose up --build
    ```
 
-2. Dokumentacja API (Scalar) będzie dostępna pod adresem: `http://localhost:5000/scalar/v1`
+2. Dokumentacja API (Scalar) będzie dostępna pod adresem: `http://localhost:5001/scalar/v1`
 
-3. Możesz użyć testera CLI:
+3. Tester CLI (interaktywny):
    ```bash
-   python scripts/tester.py
+   python3 scripts/tester.py
+   ```
+
+4. Automatyczny test całego flow (Orchestration):
+   ```bash
+   python3 scripts/tester.py --action run-all --api-url http://localhost:5001
    ```
 
 ## Przykład użycia (cURL)
 
 **Utworzenie posta:**
 ```bash
-curl -X POST http://localhost:5000/posts \
+curl -X POST http://localhost:5001/posts \
      -H "Content-Type: application/json" \
      -d '{"title": "Pierwszy post", "content": "Witaj Marten!", "author": "Szymon"}'
 ```
 
-**Lista postów (Summary):**
+**Aktualizacja posta:**
 ```bash
-curl http://localhost:5000/posts
+curl -X PUT http://localhost:5001/posts/{GUID} \
+     -H "Content-Type: application/json" \
+     -d '{"title": "Zmieniony tytuł", "content": "Nowa treść"}'
 ```
 
 **Opublikowanie posta:**
 ```bash
-curl -X POST http://localhost:5000/posts/{GUID}/publish
+curl -X POST http://localhost:5001/posts/{GUID}/publish
 ```
 
-**Pobranie szczegółów (Details):**
+**Cofnięcie publikacji:**
 ```bash
-curl http://localhost:5000/posts/{GUID}
+curl -X POST http://localhost:5001/posts/{GUID}/unpublish
+```
+
+**Pobranie szczegółów:**
+```bash
+curl http://localhost:5001/posts/{GUID}
 ```
 
 **Rebuild projekcji (Admin):**
 ```bash
-curl -X POST http://localhost:5000/admin/rebuild
+curl -X POST http://localhost:5001/admin/rebuild
 ```

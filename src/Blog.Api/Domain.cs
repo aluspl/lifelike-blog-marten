@@ -47,6 +47,12 @@ public class Post
         PublishedAt = null;
     }
 
+    public void Apply(PostUpdated updated)
+    {
+        Title = updated.Title;
+        Content = updated.Content;
+    }
+
     // Static helper to create a new post (Renamed from Create to avoid Marten conflict)
     public static (Guid Id, PostCreated Event) CreateNew(string title, string content, string author)
     {
@@ -66,6 +72,11 @@ public class Post
         if (!IsPublished) throw new InvalidOperationException("Post is not published.");
         return new PostUnpublished(Id);
     }
+
+    public PostUpdated Update(string title, string content)
+    {
+        return new PostUpdated(Id, title, content);
+    }
 }
 
 // --- 3. Projections (Read Model) ---
@@ -82,6 +93,9 @@ public class PostDetailsProjection : SingleStreamProjection<PostDetails>
 
     public PostDetails Apply(PostUnpublished unpublished, PostDetails details)
         => details with { IsPublished = false, PublishedAt = null };
+
+    public PostDetails Apply(PostUpdated updated, PostDetails details)
+        => details with { Title = updated.Title, Content = updated.Content };
 }
 
 public class PostSummaryProjection : SingleStreamProjection<PostSummary>
@@ -94,12 +108,16 @@ public class PostSummaryProjection : SingleStreamProjection<PostSummary>
 
     public PostSummary Apply(PostUnpublished unpublished, PostSummary summary)
         => summary with { IsPublished = false, PublishedAt = null };
+
+    public PostSummary Apply(PostUpdated updated, PostSummary summary)
+        => summary with { Title = updated.Title };
 }
 
 // --- 4. Commands (CQRS) ---
 public record CreatePostCommand(string Title, string Content, string Author) : ICommand;
 public record PublishPostCommand(Guid Id) : ICommand;
 public record UnpublishPostCommand(Guid Id) : ICommand;
+public record UpdatePostCommand(Guid Id, string Title, string Content) : ICommand;
 
 // --- 5. Queries (CQRS) ---
 public record GetPostQuery(Guid Id) : IQuery<PostDetails?>;
@@ -154,6 +172,25 @@ public class UnpublishPostHandler : ICommandHandler<UnpublishPostCommand>
 
         // Use domain logic
         var @event = post.Unpublish();
+        
+        _session.Events.Append(cmd.Id, @event);
+        await _session.SaveChangesAsync(ct);
+    }
+}
+
+public class UpdatePostHandler : ICommandHandler<UpdatePostCommand>
+{
+    private readonly IDocumentSession _session;
+    public UpdatePostHandler(IDocumentSession session) => _session = session;
+
+    public async Task Handle(UpdatePostCommand cmd, CancellationToken ct)
+    {
+        // Load the aggregate
+        var post = await _session.Events.AggregateStreamAsync<Post>(cmd.Id, token: ct);
+        if (post == null) throw new Exception("Post not found");
+
+        // Use domain logic
+        var @event = post.Update(cmd.Title, cmd.Content);
         
         _session.Events.Append(cmd.Id, @event);
         await _session.SaveChangesAsync(ct);

@@ -70,6 +70,12 @@ posts.MapPost("/{id:guid}/unpublish", async (IMediator m, Guid id) =>
     }
 });
 
+posts.MapPut("/{id:guid}", async (IMediator m, Guid id, [FromBody] UpdatePostCommand cmd) => 
+{
+    await m.Send(cmd with { Id = id });
+    return Results.NoContent();
+});
+
 posts.MapGet("/{id:guid}", async (IMediator m, Guid id) => 
 {
     var post = await m.Query(new GetPostQuery(id));

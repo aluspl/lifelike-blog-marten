@@ -88,14 +88,26 @@ public class BlogIntegrationTests : IAsyncLifetime
         var summaries = await session2.Query<PostSummary>().ToListAsync();
         summaries.Should().Contain(x => x.Id == post.Id && x.IsPublished);
 
-        // 6. Test Admin Rebuild
+        // 6. Test Update
+        await _host.Scenario(s =>
+        {
+            s.Put.Json(new UpdatePostCommand(post.Id, "Updated Title", "Updated Content")).ToUrl($"/posts/{post.Id}");
+            s.StatusCodeShouldBe(204);
+        });
+
+        using var sessionUpdate = store.QuerySession();
+        var updatedPost = await sessionUpdate.LoadAsync<PostDetails>(post.Id);
+        updatedPost!.Title.Should().Be("Updated Title");
+        updatedPost.Content.Should().Be("Updated Content");
+
+        // 7. Test Admin Rebuild
         await _host.Scenario(s =>
         {
             s.Post.Url("/admin/rebuild");
             s.StatusCodeShouldBe(200);
         });
 
-        // 7. Test Unpublish
+        // 8. Test Unpublish
         await _host.Scenario(s =>
         {
             s.Post.Url($"/posts/{post.Id}/unpublish");

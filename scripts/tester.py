@@ -27,33 +27,35 @@ DEBUG_MODE = False
 
 
 def show_menu():
-    """Show menu. If DEBUG_MODE is True, show a compact menu (options 1-8 + exit debug)."""
+    """Show menu. If DEBUG_MODE is True, show a compact menu (options 1-9 + exit debug)."""
     print("\n--- Marten Blog API Tester ---")
     if DEBUG_MODE:
         print("1. Utwórz nowy wpis (POST /posts)")
         print("2. Wyświetl wszystkie wpisy (GET /posts)")
-        print("3. Opublikuj wpis (POST /posts/{id}/publish)")
-        print("4. Cofnij publikację (POST /posts/{id}/unpublish)")
-        print("5. Szczegóły wpisu (GET /posts/{id})")
-        print("6. Historia zdarzeń (GET /posts/{id}/events)")
-        print("7. Admin: Rebuild Projections (POST /admin/rebuild)")
-        print("8. Healthcheck API (debug toggle)")
+        print("3. Aktualizuj wpis (PUT /posts/{id})")
+        print("4. Opublikuj wpis (POST /posts/{id}/publish)")
+        print("5. Cofnij publikację (POST /posts/{id}/unpublish)")
+        print("6. Szczegóły wpisu (GET /posts/{id})")
+        print("7. Historia zdarzeń (GET /posts/{id}/events)")
+        print("8. Admin: Rebuild Projections (POST /admin/rebuild)")
+        print("9. Healthcheck API (debug toggle)")
         print("0. Wyjście z trybu debug (przywróć pełne menu)")
         return input("Wybierz opcję: ")
     else:
         print("1. Utwórz nowy wpis (POST /posts)")
         print("2. Wyświetl wszystkie wpisy (GET /posts)")
-        print("3. Opublikuj wpis (POST /posts/{id}/publish)")
-        print("4. Cofnij publikację (POST /posts/{id}/unpublish)")
-        print("5. Szczegóły wpisu (GET /posts/{id})")
-        print("6. Historia zdarzeń (GET /posts/{id}/events)")
-        print("7. Admin: Rebuild Projections (POST /admin/rebuild)")
-        print("8. Healthcheck API")
-        print("9. Start isolated env (docker-compose up)")
-        print("10. Stop isolated env (docker-compose down)")
-        print("11. Show docker-compose logs")
-        print("12. Run all (orchestrate: start env -> wait -> run simple scenario)")
-        print("13. Wyjście")
+        print("3. Aktualizuj wpis (PUT /posts/{id})")
+        print("4. Opublikuj wpis (POST /posts/{id}/publish)")
+        print("5. Cofnij publikację (POST /posts/{id}/unpublish)")
+        print("6. Szczegóły wpisu (GET /posts/{id})")
+        print("7. Historia zdarzeń (GET /posts/{id}/events)")
+        print("8. Admin: Rebuild Projections (POST /admin/rebuild)")
+        print("9. Healthcheck API")
+        print("10. Start isolated env (docker-compose up)")
+        print("11. Stop isolated env (docker-compose down)")
+        print("12. Show docker-compose logs")
+        print("13. Run all (orchestrate: start env -> wait -> run simple scenario)")
+        print("14. Wyjście")
         return input("Wybierz opcję: ")
 
 def rebuild_projections():
@@ -82,6 +84,31 @@ def create_post():
         response = requests.post(f"{API_URL}/posts", json=payload)
         if response.status_code == 202:
             print("[SUCCESS] Komenda utworzenia wysłana (202 Accepted).")
+        else:
+            print(f"[ERROR] Status: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"[EXCEPTION] {e}")
+
+def update_post():
+    posts = list_posts()
+    if not posts: return
+    
+    idx = int(input("Wybierz numer wpisu do aktualizacji: ")) - 1
+    post_id = posts[idx]['id']
+    
+    title = input(f"Nowy tytuł (obecny: {posts[idx]['title']}): ")
+    content = input("Nowa treść: ")
+    
+    payload = {
+        "id": post_id,
+        "title": title,
+        "content": content
+    }
+    
+    try:
+        response = requests.put(f"{API_URL}/posts/{post_id}", json=payload)
+        if response.status_code == 204:
+            print(f"[SUCCESS] Wpis {post_id} został zaktualizowany.")
         else:
             print(f"[ERROR] Status: {response.status_code}, {response.text}")
     except Exception as e:
@@ -233,6 +260,15 @@ def create_post_noninteractive(title: str, content: str, author: str) -> dict | 
         return None
     except requests.RequestException:
         return None
+
+
+def update_post_noninteractive(post_id: str, title: str, content: str) -> bool:
+    payload = {"id": post_id, "title": title, "content": content}
+    try:
+        r = requests.put(f"{API_URL}/posts/{post_id}", json=payload, timeout=5)
+        return r.status_code in (200, 204)
+    except requests.RequestException:
+        return False
 
 
 def publish_post_noninteractive(post_id: str) -> bool:
@@ -413,16 +449,18 @@ def main():
             elif choice == '2':
                 list_posts()
             elif choice == '3':
-                publish_post()
+                update_post()
             elif choice == '4':
-                unpublish_post()
+                publish_post()
             elif choice == '5':
-                view_details()
+                unpublish_post()
             elif choice == '6':
-                view_events()
+                view_details()
             elif choice == '7':
-                rebuild_projections()
+                view_events()
             elif choice == '8':
+                rebuild_projections()
+            elif choice == '9':
                 # toggle debug off -> return full menu
                 print("Exiting debug mode")
                 DEBUG_MODE = False
@@ -438,47 +476,49 @@ def main():
         elif choice == '2':
             list_posts()
         elif choice == '3':
-            publish_post()
+            update_post()
         elif choice == '4':
-            unpublish_post()
+            publish_post()
         elif choice == '5':
-            view_details()
+            unpublish_post()
         elif choice == '6':
-            view_events()
+            view_details()
         elif choice == '7':
-            rebuild_projections()
+            view_events()
         elif choice == '8':
+            rebuild_projections()
+        elif choice == '9':
             ok, details = api_health(API_URL)
             if ok:
                 print(f"[HEALTH] API reachable: {details}")
             else:
                 print(f"[HEALTH] API not reachable: {details}")
-        elif choice == '9':
+        elif choice == '10':
             compose_file = DEFAULT_COMPOSE_PATH
             ok, out = compose_up(compose_file)
             if ok:
                 print("[DOCKER] compose up started")
             else:
                 print(f"[DOCKER] compose up failed:\n{out}")
-        elif choice == '10':
+        elif choice == '11':
             compose_file = DEFAULT_COMPOSE_PATH
             ok, out = compose_down(compose_file)
             if ok:
                 print("[DOCKER] compose down finished")
             else:
                 print(f"[DOCKER] compose down failed:\n{out}")
-        elif choice == '11':
+        elif choice == '12':
             compose_file = DEFAULT_COMPOSE_PATH
             out = compose_logs(compose_file)
             print(out)
-        elif choice == '12':
-            run_all_orchestrate()
         elif choice == '13':
+            run_all_orchestrate()
+        elif choice == '14':
             break
         else:
             print("Nieprawidłowa opcja.")
 
-        if choice not in ('12', '13'):
+        if choice not in ('13', '14'):
             input("\nNaciśnij Enter, aby kontynuować...")
 
 
@@ -749,21 +789,28 @@ def run_all_orchestrate(no_teardown=False):
         details = get_post_noninteractive(post_id)
         print(json.dumps(details, indent=2))
 
-        print(f"4. Publikowanie wpisu: {post_id}")
+        print(f"4. Aktualizowanie wpisu: {post_id}")
+        update_post_noninteractive(post_id, f"{title} (UPDATED)", "Zaktualizowana treść")
+
+        print(f"5. Szczegóły (po aktualizacji):")
+        details = get_post_noninteractive(post_id)
+        print(json.dumps(details, indent=2))
+
+        print(f"6. Publikowanie wpisu: {post_id}")
         publish_post_noninteractive(post_id)
 
-        print(f"5. Szczegóły (po publikacji):")
+        print(f"7. Szczegóły (po publikacji):")
         details = get_post_noninteractive(post_id)
         print(json.dumps(details, indent=2))
 
-        print(f"6. Cofanie publikacji: {post_id}")
+        print(f"8. Cofanie publikacji: {post_id}")
         unpublish_post_noninteractive(post_id)
 
-        print(f"7. Szczegóły (po cofnięciu publikacji):")
+        print(f"9. Szczegóły (po cofnięciu publikacji):")
         details = get_post_noninteractive(post_id)
         print(json.dumps(details, indent=2))
 
-        print(f"8. Historia zdarzeń:")
+        print(f"10. Historia zdarzeń:")
         events = get_events_noninteractive(post_id)
         if events:
             for e in events:
