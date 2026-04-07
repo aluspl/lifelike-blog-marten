@@ -1,6 +1,6 @@
-# Marten .NET 10 + Python + Docker - Blog Post System
+# Marten .NET 10 + Docker - Blog Post System
 
-Ten projekt demonstruje wykorzystanie biblioteki **Marten** (Event Store & Projections) w .NET 10, zintegrowanego z serwisem w Pythonie, działających w kontenerach Docker.
+Ten projekt demonstruje wykorzystanie biblioteki **Marten** (Event Store & Projections) w .NET 10 w kontenerach Docker.
 
 ## Architektura i Event Storming
 
@@ -18,7 +18,6 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 
 ### Usługi (Core Services)
 - `src/Blog.Api`: Web API w .NET 10 korzystające z Martena do zapisu zdarzeń i odczytu projekcji.
-- `src/Blog.Processor.Python`: Serwis tła (Background Worker) w Pythonie, który demonstruje **Polyglot Persistence** — bezpośrednio obserwuje tabele Martena w PostgreSQL i loguje stan projekcji.
 
 ### Narzędzia (Tooling)
 - `scripts/tester.py`: Zaawansowany, interaktywny i skryptowalny CLI tester do weryfikacji całego flow API (obsługuje orchestrację Docker Compose).

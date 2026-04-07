@@ -26,16 +26,3 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  python-observer:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.python
-    environment:
-      - DB_HOST=postgres
-      - DB_NAME=marten
-      - DB_USER=postgres
-      - DB_PASS=postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
