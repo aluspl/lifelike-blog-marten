@@ -9,13 +9,15 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 - `PostPublished`: Opublikowanie wpisu (z datą).
 - `PostUpdated`: Zmiana tytułu lub treści.
 
-**Projekcja (Read Model):**
-- `PostDetails`: Aktualny stan posta, agregowany inline w momencie zapisu zdarzeń.
+**Projekcje (Read Models):**
+- `PostDetails`: Pełny stan posta wraz z treścią, agregowany inline.
+- `PostSummary`: Zoptymalizowany model do listowania wpisów (bez ciężkiej treści).
 
 ## Struktura projektu
 
 - `src/Blog.Api`: Web API w .NET 10 korzystające z Martena do zapisu zdarzeń i odczytu projekcji.
-- `src/Blog.Processor.Python`: Skrypt obserwujący bazę danych PostgreSQL i logujący projekcje Martena (pokazuje polyglot persistence).
+- `src/Blog.Processor.Python`: Skrypt obserwujący bazę danych PostgreSQL i logujący projekcje Martena.
+- `scripts/tester.py`: Interaktywny i skryptowalny CLI tester do testowania flow API.
 - `docker/`: Konfiguracja Dockera (Dockerfile i docker-compose).
 
 ## Jak uruchomić?
@@ -23,14 +25,14 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 1. Przejdź do folderu `docker`:
    ```bash
    cd docker
-   docker-compose up --build
+   docker compose up --build
    ```
 
-2. API będzie dostępne pod adresem: `http://localhost:5000` (Swagger pod `/swagger`).
+2. Dokumentacja API (Scalar) będzie dostępna pod adresem: `http://localhost:5000/scalar/v1`
 
-3. Python Observer będzie wypisywał znalezione posty w logach kontenera:
+3. Możesz użyć testera CLI:
    ```bash
-   docker-compose logs -f python-observer
+   python scripts/tester.py
    ```
 
 ## Przykład użycia (cURL)
@@ -42,12 +44,22 @@ curl -X POST http://localhost:5000/posts \
      -d '{"title": "Pierwszy post", "content": "Witaj Marten!", "author": "Szymon"}'
 ```
 
+**Lista postów (Summary):**
+```bash
+curl http://localhost:5000/posts
+```
+
 **Opublikowanie posta:**
 ```bash
 curl -X POST http://localhost:5000/posts/{GUID}/publish
 ```
 
-**Pobranie szczegółów:**
+**Pobranie szczegółów (Details):**
 ```bash
 curl http://localhost:5000/posts/{GUID}
+```
+
+**Rebuild projekcji (Admin):**
+```bash
+curl -X POST http://localhost:5000/admin/rebuild
 ```

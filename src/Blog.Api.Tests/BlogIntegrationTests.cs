@@ -26,6 +26,7 @@ public class BlogIntegrationTests : IAsyncLifetime
                 {
                     options.Connection(_postgresContainer.GetConnectionString());
                     options.Projections.Add<PostDetailsProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
+                    options.Projections.Add<PostSummaryProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
                 }).UseLightweightSessions();
             });
         });
@@ -76,5 +77,34 @@ public class BlogIntegrationTests : IAsyncLifetime
         using var session2 = store.QuerySession();
         var publishedPost = await session2.LoadAsync<PostDetails>(post.Id);
         publishedPost!.IsPublished.Should().BeTrue();
+
+        // 5. Verify Summary List
+        await _host.Scenario(s =>
+        {
+            s.Get.Url("/posts");
+            s.StatusCodeShouldBe(200);
+        });
+
+        var summaries = await session2.Query<PostSummary>().ToListAsync();
+        summaries.Should().Contain(x => x.Id == post.Id && x.IsPublished);
+
+        // 6. Test Admin Rebuild
+        await _host.Scenario(s =>
+        {
+            s.Post.Url("/admin/rebuild");
+            s.StatusCodeShouldBe(200);
+        });
+
+        // 7. Test Unpublish
+        await _host.Scenario(s =>
+        {
+            s.Post.Url($"/posts/{post.Id}/unpublish");
+            s.StatusCodeShouldBe(204);
+        });
+
+        using var session3 = store.QuerySession();
+        var unpublishedPost = await session3.LoadAsync<PostDetails>(post.Id);
+        unpublishedPost!.IsPublished.Should().BeFalse();
+        unpublishedPost.PublishedAt.Should().BeNull();
     }
 }

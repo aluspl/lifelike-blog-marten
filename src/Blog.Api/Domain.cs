@@ -13,6 +13,7 @@ public class PostAlreadyPublishedException : InvalidOperationException
 // --- 1. Events (Immutable facts) ---
 public record PostCreated(Guid Id, string Title, string Content, string Author);
 public record PostPublished(Guid Id, DateTime PublishedAt);
+public record PostUnpublished(Guid Id);
 public record PostUpdated(Guid Id, string Title, string Content);
 
 // --- 2. Aggregate Root (Domain Logic & Aggregation) ---
@@ -40,6 +41,12 @@ public class Post
         PublishedAt = published.PublishedAt;
     }
 
+    public void Apply(PostUnpublished unpublished)
+    {
+        IsPublished = false;
+        PublishedAt = null;
+    }
+
     // Static helper to create a new post (Renamed from Create to avoid Marten conflict)
     public static (Guid Id, PostCreated Event) CreateNew(string title, string content, string author)
     {
@@ -53,10 +60,17 @@ public class Post
         if (IsPublished) throw new PostAlreadyPublishedException("Post is already published.");
         return new PostPublished(Id, DateTime.UtcNow);
     }
+
+    public PostUnpublished Unpublish()
+    {
+        if (!IsPublished) throw new InvalidOperationException("Post is not published.");
+        return new PostUnpublished(Id);
+    }
 }
 
 // --- 3. Projections (Read Model) ---
 public record PostDetails(Guid Id, string Title, string Content, string Author, bool IsPublished, DateTime? PublishedAt);
+public record PostSummary(Guid Id, string Title, string Author, bool IsPublished, DateTime? PublishedAt);
 
 public class PostDetailsProjection : SingleStreamProjection<PostDetails>
 {
@@ -65,15 +79,31 @@ public class PostDetailsProjection : SingleStreamProjection<PostDetails>
 
     public PostDetails Apply(PostPublished published, PostDetails details)
         => details with { IsPublished = true, PublishedAt = published.PublishedAt };
+
+    public PostDetails Apply(PostUnpublished unpublished, PostDetails details)
+        => details with { IsPublished = false, PublishedAt = null };
+}
+
+public class PostSummaryProjection : SingleStreamProjection<PostSummary>
+{
+    public PostSummary Create(PostCreated created) 
+        => new(created.Id, created.Title, created.Author, false, null);
+
+    public PostSummary Apply(PostPublished published, PostSummary summary)
+        => summary with { IsPublished = true, PublishedAt = published.PublishedAt };
+
+    public PostSummary Apply(PostUnpublished unpublished, PostSummary summary)
+        => summary with { IsPublished = false, PublishedAt = null };
 }
 
 // --- 4. Commands (CQRS) ---
 public record CreatePostCommand(string Title, string Content, string Author) : ICommand;
 public record PublishPostCommand(Guid Id) : ICommand;
+public record UnpublishPostCommand(Guid Id) : ICommand;
 
 // --- 5. Queries (CQRS) ---
 public record GetPostQuery(Guid Id) : IQuery<PostDetails?>;
-public record GetPostsQuery() : IQuery<IReadOnlyList<PostDetails>>;
+public record GetPostsQuery() : IQuery<IReadOnlyList<PostSummary>>;
 public record GetPostEventsQuery(Guid Id) : IQuery<IReadOnlyList<PostEventInfo>>;
 
 public record PostEventInfo(long Version, DateTimeOffset Timestamp, string EventType, object Data);
@@ -111,6 +141,25 @@ public class PublishPostHandler : ICommandHandler<PublishPostCommand>
     }
 }
 
+public class UnpublishPostHandler : ICommandHandler<UnpublishPostCommand>
+{
+    private readonly IDocumentSession _session;
+    public UnpublishPostHandler(IDocumentSession session) => _session = session;
+
+    public async Task Handle(UnpublishPostCommand cmd, CancellationToken ct)
+    {
+        // Load the aggregate
+        var post = await _session.Events.AggregateStreamAsync<Post>(cmd.Id, token: ct);
+        if (post == null) throw new Exception("Post not found");
+
+        // Use domain logic
+        var @event = post.Unpublish();
+        
+        _session.Events.Append(cmd.Id, @event);
+        await _session.SaveChangesAsync(ct);
+    }
+}
+
 public class GetPostHandler : IQueryHandler<GetPostQuery, PostDetails?>
 {
     private readonly IQuerySession _session;
@@ -120,14 +169,14 @@ public class GetPostHandler : IQueryHandler<GetPostQuery, PostDetails?>
         => await _session.LoadAsync<PostDetails>(query.Id, ct);
 }
 
-public class GetPostsHandler : IQueryHandler<GetPostsQuery, IReadOnlyList<PostDetails>>
+public class GetPostsHandler : IQueryHandler<GetPostsQuery, IReadOnlyList<PostSummary>>
 {
     private readonly IQuerySession _session;
     public GetPostsHandler(IQuerySession session) => _session = session;
 
-    public async Task<IReadOnlyList<PostDetails>> Handle(GetPostsQuery query, CancellationToken ct)
+    public async Task<IReadOnlyList<PostSummary>> Handle(GetPostsQuery query, CancellationToken ct)
     {
-        return await _session.Query<PostDetails>().ToListAsync(ct);
+        return await _session.Query<PostSummary>().ToListAsync(ct);
     }
 }
 

@@ -27,30 +27,45 @@ DEBUG_MODE = False
 
 
 def show_menu():
-    """Show menu. If DEBUG_MODE is True, show a compact menu (options 1-6 + exit debug)."""
+    """Show menu. If DEBUG_MODE is True, show a compact menu (options 1-8 + exit debug)."""
     print("\n--- Marten Blog API Tester ---")
     if DEBUG_MODE:
         print("1. Utwórz nowy wpis (POST /posts)")
         print("2. Wyświetl wszystkie wpisy (GET /posts)")
         print("3. Opublikuj wpis (POST /posts/{id}/publish)")
-        print("4. Szczegóły wpisu (GET /posts/{id})")
-        print("5. Historia zdarzeń (GET /posts/{id}/events)")
-        print("6. Healthcheck API (debug toggle)")
+        print("4. Cofnij publikację (POST /posts/{id}/unpublish)")
+        print("5. Szczegóły wpisu (GET /posts/{id})")
+        print("6. Historia zdarzeń (GET /posts/{id}/events)")
+        print("7. Admin: Rebuild Projections (POST /admin/rebuild)")
+        print("8. Healthcheck API (debug toggle)")
         print("0. Wyjście z trybu debug (przywróć pełne menu)")
         return input("Wybierz opcję: ")
     else:
         print("1. Utwórz nowy wpis (POST /posts)")
         print("2. Wyświetl wszystkie wpisy (GET /posts)")
         print("3. Opublikuj wpis (POST /posts/{id}/publish)")
-        print("4. Szczegóły wpisu (GET /posts/{id})")
-        print("5. Historia zdarzeń (GET /posts/{id}/events)")
-        print("6. Healthcheck API")
-        print("7. Start isolated env (docker-compose up)")
-        print("8. Stop isolated env (docker-compose down)")
-        print("9. Show docker-compose logs")
-        print("10. Run all (orchestrate: start env -> wait -> run simple scenario)")
-        print("11. Wyjście")
+        print("4. Cofnij publikację (POST /posts/{id}/unpublish)")
+        print("5. Szczegóły wpisu (GET /posts/{id})")
+        print("6. Historia zdarzeń (GET /posts/{id}/events)")
+        print("7. Admin: Rebuild Projections (POST /admin/rebuild)")
+        print("8. Healthcheck API")
+        print("9. Start isolated env (docker-compose up)")
+        print("10. Stop isolated env (docker-compose down)")
+        print("11. Show docker-compose logs")
+        print("12. Run all (orchestrate: start env -> wait -> run simple scenario)")
+        print("13. Wyjście")
         return input("Wybierz opcję: ")
+
+def rebuild_projections():
+    try:
+        response = requests.post(f"{API_URL}/admin/rebuild")
+        if response.status_code == 200:
+            print("[SUCCESS] Projekcje zostały przebudowane.")
+            print(json.dumps(response.json(), indent=4))
+        else:
+            print(f"[ERROR] Status: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"[EXCEPTION] {e}")
 
 def create_post():
     title = input("Tytuł: ")
@@ -152,6 +167,22 @@ def publish_post():
     except Exception as e:
         print(f"[EXCEPTION] {e}")
 
+def unpublish_post():
+    posts = list_posts()
+    if not posts: return
+    
+    idx = int(input("Wybierz numer wpisu, aby cofnąć publikację: ")) - 1
+    post_id = posts[idx]['id']
+    
+    try:
+        response = requests.post(f"{API_URL}/posts/{post_id}/unpublish")
+        if response.status_code == 204:
+            print(f"[SUCCESS] Publikacja wpisu {post_id} została cofnięta.")
+        else:
+            print(f"[ERROR] Status: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"[EXCEPTION] {e}")
+
 def view_details():
     posts = list_posts()
     if not posts: return
@@ -210,6 +241,24 @@ def publish_post_noninteractive(post_id: str) -> bool:
         return r.status_code in (200, 204)
     except requests.RequestException:
         return False
+
+
+def unpublish_post_noninteractive(post_id: str) -> bool:
+    try:
+        r = requests.post(f"{API_URL}/posts/{post_id}/unpublish", timeout=5)
+        return r.status_code in (200, 204)
+    except requests.RequestException:
+        return False
+
+
+def get_post_noninteractive(post_id: str) -> dict | None:
+    try:
+        r = requests.get(f"{API_URL}/posts/{post_id}", timeout=5)
+        if r.status_code == 200:
+            return r.json()
+        return None
+    except requests.RequestException:
+        return None
 
 
 def get_events_noninteractive(post_id: str) -> list | None:
@@ -366,10 +415,14 @@ def main():
             elif choice == '3':
                 publish_post()
             elif choice == '4':
-                view_details()
+                unpublish_post()
             elif choice == '5':
-                view_events()
+                view_details()
             elif choice == '6':
+                view_events()
+            elif choice == '7':
+                rebuild_projections()
+            elif choice == '8':
                 # toggle debug off -> return full menu
                 print("Exiting debug mode")
                 DEBUG_MODE = False
@@ -387,39 +440,46 @@ def main():
         elif choice == '3':
             publish_post()
         elif choice == '4':
-            view_details()
+            unpublish_post()
         elif choice == '5':
-            view_events()
+            view_details()
         elif choice == '6':
+            view_events()
+        elif choice == '7':
+            rebuild_projections()
+        elif choice == '8':
             ok, details = api_health(API_URL)
             if ok:
                 print(f"[HEALTH] API reachable: {details}")
             else:
                 print(f"[HEALTH] API not reachable: {details}")
-        elif choice == '7':
+        elif choice == '9':
             compose_file = DEFAULT_COMPOSE_PATH
             ok, out = compose_up(compose_file)
             if ok:
                 print("[DOCKER] compose up started")
             else:
                 print(f"[DOCKER] compose up failed:\n{out}")
-        elif choice == '8':
+        elif choice == '10':
             compose_file = DEFAULT_COMPOSE_PATH
             ok, out = compose_down(compose_file)
             if ok:
                 print("[DOCKER] compose down finished")
             else:
                 print(f"[DOCKER] compose down failed:\n{out}")
-        elif choice == '9':
+        elif choice == '11':
             compose_file = DEFAULT_COMPOSE_PATH
             out = compose_logs(compose_file)
             print(out)
-        elif choice == '10':
+        elif choice == '12':
             run_all_orchestrate()
-        elif choice == '11':
+        elif choice == '13':
             break
         else:
             print("Nieprawidłowa opcja.")
+
+        if choice not in ('12', '13'):
+            input("\nNaciśnij Enter, aby kontynuować...")
 
 
 def api_health(api_url, retries=5, delay=2):
@@ -649,14 +709,12 @@ def show_system_status(compose_file):
         print("Docker compose file not found for ps: ", compose_file)
 
 def run_all_orchestrate(no_teardown=False):
-    """Simple orchestration: if API down, start compose, wait for health, run a minimal scenario.
-    After showing status, wait for user keypress before teardown (unless no_teardown True).
-    """
-    # If the configured default compose path doesn't exist (placeholder), allow
-    # compose_up to search fallback locations by passing None.
+    """Simple orchestration: ensure API is up (start if needed), run scenario, teardown if started."""
     compose_file = DEFAULT_COMPOSE_PATH if os.path.exists(DEFAULT_COMPOSE_PATH) else None
     print("[ORCH] Checking API health...")
     ok, _ = api_health(API_URL, retries=2, delay=1)
+    
+    started_by_us = False
     if ok:
         print("[ORCH] API already up.")
     else:
@@ -665,6 +723,7 @@ def run_all_orchestrate(no_teardown=False):
         if not ok_up:
             print(f"[ORCH] compose up failed:\n{out}")
             return
+        started_by_us = True
         print("[ORCH] compose up OK, waiting for API to become healthy...")
         ok_wait, details = api_health(API_URL, retries=30, delay=2)
         if not ok_wait:
@@ -672,19 +731,57 @@ def run_all_orchestrate(no_teardown=False):
             print("[ORCH] Showing compose logs:\n")
             print(compose_logs(compose_file))
             return
-        print("[ORCH] API is healthy. Running simple scenario: create post -> list posts")
-        try:
-            create_post()
-            list_posts()
-        except Exception as e:
-            print(f"[ORCH] scenario failed: {e}")
 
-        # Show system status (API + DB) and wait for user before teardown
-        print("\n--- System status ---")
-        show_system_status(compose_file)
-        print("--- End status ---\n")
+    print("[ORCH] Running full flow scenario...")
+    try:
+        title = f"Flow Test {int(time.time())}"
+        print(f"1. Tworzenie wpisu: {title}")
+        create_post_noninteractive(title, "Treść testowa", "orchestrator")
+        
+        print("2. Pobieranie listy wpisów")
+        posts = list_posts()
+        post_id = next((p['id'] for p in posts if p['title'] == title), None)
+        if not post_id:
+            print("[ORCH] Nie znaleziono utworzonego wpisu na liście!")
+            return
+
+        print(f"3. Szczegóły (stan początkowy):")
+        details = get_post_noninteractive(post_id)
+        print(json.dumps(details, indent=2))
+
+        print(f"4. Publikowanie wpisu: {post_id}")
+        publish_post_noninteractive(post_id)
+
+        print(f"5. Szczegóły (po publikacji):")
+        details = get_post_noninteractive(post_id)
+        print(json.dumps(details, indent=2))
+
+        print(f"6. Cofanie publikacji: {post_id}")
+        unpublish_post_noninteractive(post_id)
+
+        print(f"7. Szczegóły (po cofnięciu publikacji):")
+        details = get_post_noninteractive(post_id)
+        print(json.dumps(details, indent=2))
+
+        print(f"8. Historia zdarzeń:")
+        events = get_events_noninteractive(post_id)
+        if events:
+            for e in events:
+                print(f"   v{e['version']} | {e['timestamp']} | {e['eventType']}")
+        else:
+            print("   Brak zdarzeń.")
+
+    except Exception as e:
+        print(f"[ORCH] scenario failed: {e}")
+
+    # Show system status
+    print("\n--- System status ---")
+    show_system_status(compose_file)
+    print("--- End status ---\n")
+
+    if started_by_us:
         try:
-            input("Naciśnij Enter aby kontynuować (teardown zostanie wykonany jeśli nie ustawiono no-teardown)...")
+            input("Naciśnij Enter aby kontynuować (teardown zostanie wykonany)...")
         except Exception:
             pass
         if not no_teardown:
@@ -694,6 +791,8 @@ def run_all_orchestrate(no_teardown=False):
                 print("[ORCH] Teardown finished.")
             else:
                 print(f"[ORCH] Teardown failed:\n{out_down}")
+    else:
+        print("[ORCH] API was not started by us, skipping teardown.")
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description="Marten Blog API tester CLI")
