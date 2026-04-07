@@ -1,0 +1,18 @@
+# .NET 10 SDK for building
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY src/Blog.Api/Blog.Api.csproj ./Blog.Api/
+RUN dotnet restore Blog.Api/Blog.Api.csproj
+
+# Copy everything else and build
+COPY src/Blog.Api/ ./Blog.Api/
+WORKDIR /app/Blog.Api
+RUN dotnet publish -c Release -o /app/out
+
+# .NET 10 Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app/out .
+ENTRYPOINT ["dotnet", "Blog.Api.dll"]

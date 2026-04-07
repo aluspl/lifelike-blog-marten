@@ -1,0 +1,23 @@
+name: create-publish-get
+steps:
+  - name: create
+    method: POST
+    path: /posts
+    json:
+      title: "E2E test"
+      content: "content"
+      author: "tester"
+    expect:
+      status: 202
+    extract:
+      id: $.id
+  - name: publish
+    method: POST
+    path: /posts/${id}/publish
+    expect:
+      status: 204
+  - name: get
+    method: GET
+    path: /posts/${id}
+    expect:
+      status: 200

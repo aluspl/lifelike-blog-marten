@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: marten
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  blog-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Postgres=Host=postgres;Database=marten;Username=postgres;Password=postgres
+    ports:
+      - "5001:8080"
+      - "5002:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  python-observer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.python
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=marten
+      - DB_USER=postgres
+      - DB_PASS=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
