@@ -1,0 +1,48 @@
+.idea/
+.vscode/
+.vs/
+
+# Build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Visual Studio files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+
+# Runtime
+*.dll
+*.exe
+*.pdb
+
+# Test output
+TestResults/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+*.log
+scripts/logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
