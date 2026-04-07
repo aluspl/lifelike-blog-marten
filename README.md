@@ -1,6 +1,6 @@
 # Marten .NET 10 + Docker - Blog Post System
 
-Ten projekt demonstruje wykorzystanie biblioteki **Marten** (Event Store & Projections) w .NET 10 w kontenerach Docker.
+Ten projekt demonstruje wykorzystanie biblioteki **Marten** (Event Store & Projections) w .NET 10 w kontenerach Docker. Jest to kompletna implementacja systemu blogowego opartego na architekturze Event Sourcing.
 
 ## Architektura i Event Storming
 
