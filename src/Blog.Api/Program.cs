@@ -1,8 +1,11 @@
-using Blog.Api.Domain;
+using Blog.Api.Domain.Aggregates;
+using Blog.Api.Domain.Commands;
+using Blog.Api.Domain.Exceptions;
+using Blog.Api.Domain.Projections;
+using Blog.Api.Domain.Queries;
 using Blog.Api.Infrastructure;
 using Marten;
 using Microsoft.AspNetCore.Mvc;
-
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,7 +48,7 @@ posts.MapPost("/{id:guid}/publish", async (IMediator m, Guid id) =>
         await m.Send(new PublishPostCommand(id));
         return Results.NoContent();
     }
-    catch (Blog.Api.Domain.PostAlreadyPublishedException ex)
+    catch (PostAlreadyPublishedException ex)
     {
         // Return 409 Conflict for an already published post
         return Results.Conflict(new { error = ex.Message });
@@ -107,3 +110,4 @@ admin.MapPost("/rebuild", async (IDocumentStore store, CancellationToken ct) =>
 app.Run();
 
 public partial class Program { }
+
