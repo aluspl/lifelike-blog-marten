@@ -21,6 +21,7 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 
 ### Narzędzia (Tooling)
 - `scripts/tester.py`: Zaawansowany, interaktywny i skryptowalny CLI tester do weryfikacji całego flow API (obsługuje orchestrację Docker Compose).
+- `scripts/processor.py`: Skrypt demonstracyjny **Polyglot Persistence** — bezpośrednio obserwuje tabele Martena w PostgreSQL i loguje stan projekcji (uruchamiany lokalnie).
 
 ### Infrastruktura
 - `docker/`: Konfiguracja Dockera (Dockerfile i docker-compose).
@@ -43,6 +44,11 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 4. Automatyczny test całego flow (Orchestration):
    ```bash
    python3 scripts/tester.py --action run-all --api-url http://localhost:5001
+   ```
+
+5. Podgląd bazy Martena przez skrypt Python:
+   ```bash
+   python3 scripts/processor.py
    ```
 
 ## Przykład użycia (cURL)
