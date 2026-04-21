@@ -15,9 +15,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddMarten(options =>
 {
     options.Connection(builder.Configuration.GetConnectionString("Postgres") ?? "Host=postgres;Database=marten;Username=postgres;Password=postgres");
-    options.Projections.Add<PostDetailsProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
-    options.Projections.Add<PostSummaryProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
-}).UseLightweightSessions();
+    options.Projections.Add<PostDetailsProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Inline);
+    options.Projections.Add<PostSummaryProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Inline);
+    // Async: przetwarza zdarzenia po commicie - custom grouper może odczytać PostDetails
+    options.Projections.Add<AuthorStatsProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Async);
+})
+.UseLightweightSessions()
+.AddAsyncDaemon(JasperFx.Events.Daemon.DaemonMode.HotCold);
 
 builder.Services.AddScoped<IMediator, SimpleMediator>();
 builder.Services.AddMediatorHandlers(typeof(Program).Assembly);
@@ -91,19 +95,26 @@ posts.MapGet("/{id:guid}/events", async (IMediator m, Guid id) =>
     return Results.Ok(events);
 });
 
-posts.MapGet("/", async (IMediator m) => 
+posts.MapGet("/", async (IMediator m) => Results.Ok((object?)await m.Query(new GetPostsQuery())));
+
+// --- Stats Endpoints ---
+var stats = app.MapGroup("/stats");
+
+stats.MapGet("/authors/{author}", async (IMediator m, string author) =>
 {
-    return Results.Ok(await m.Query(new GetPostsQuery()));
+    var result = await m.Query(new GetAuthorStatsQuery(author));
+    return result is { } ? Results.Ok(result) : Results.NotFound();
 });
 
 // --- Admin Endpoints ---
 var admin = app.MapGroup("/admin");
 
-admin.MapPost("/rebuild", async (IDocumentStore store, CancellationToken ct) => 
+admin.MapPost("/rebuild", async (IDocumentStore store, CancellationToken ct) =>
 {
     using var daemon = await store.BuildProjectionDaemonAsync();
-    await daemon.RebuildProjection<PostDetails>(ct);
-    await daemon.RebuildProjection<PostSummary>(ct);
+    await daemon.RebuildProjectionAsync<PostDetails>(ct);
+    await daemon.RebuildProjectionAsync<PostSummary>(ct);
+    await daemon.RebuildProjectionAsync<AuthorStats>(ct);
     return Results.Ok(new { message = "Rebuild completed" });
 });
 
