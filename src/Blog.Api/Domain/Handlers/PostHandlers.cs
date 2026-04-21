@@ -97,6 +97,15 @@ public class GetPostsHandler : IQueryHandler<GetPostsQuery, IReadOnlyList<PostSu
     }
 }
 
+public class GetAuthorStatsHandler : IQueryHandler<GetAuthorStatsQuery, AuthorStats?>
+{
+    private readonly IQuerySession _session;
+    public GetAuthorStatsHandler(IQuerySession session) => _session = session;
+
+    public async Task<AuthorStats?> Handle(GetAuthorStatsQuery query, CancellationToken ct)
+        => await _session.LoadAsync<AuthorStats>(query.Author, ct);
+}
+
 public class GetPostEventsHandler : IQueryHandler<GetPostEventsQuery, IReadOnlyList<PostEventInfo>>
 {
     private readonly IQuerySession _session;

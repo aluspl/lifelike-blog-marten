@@ -39,7 +39,8 @@ def show_menu():
         print("6. Szczegóły wpisu (GET /posts/{id})")
         print("7. Historia zdarzeń (GET /posts/{id}/events)")
         print("8. Admin: Rebuild Projections (POST /admin/rebuild)")
-        print("9. Healthcheck API (debug toggle)")
+        print("9. Statystyki autora — MultiStream (GET /stats/authors/{autor})")
+        print("10. Healthcheck API (debug toggle)")
         print("0. Wyjście z trybu debug (przywróć pełne menu)")
         return input("Wybierz opcję: ")
     else:
@@ -51,12 +52,13 @@ def show_menu():
         print("6. Szczegóły wpisu (GET /posts/{id})")
         print("7. Historia zdarzeń (GET /posts/{id}/events)")
         print("8. Admin: Rebuild Projections (POST /admin/rebuild)")
-        print("9. Healthcheck API")
-        print("10. Start isolated env (docker-compose up)")
-        print("11. Stop isolated env (docker-compose down)")
-        print("12. Show docker-compose logs")
-        print("13. Run all (orchestrate: start env -> wait -> run simple scenario)")
-        print("14. Wyjście")
+        print("9. Statystyki autora — MultiStream (GET /stats/authors/{autor})")
+        print("10. Healthcheck API")
+        print("11. Start isolated env (docker-compose up)")
+        print("12. Stop isolated env (docker-compose down)")
+        print("13. Show docker-compose logs")
+        print("14. Run all (orchestrate: start env -> wait -> run simple scenario)")
+        print("15. Wyjście")
         return input("Wybierz opcję: ")
 
 def rebuild_projections():
@@ -65,6 +67,28 @@ def rebuild_projections():
         if response.status_code == 200:
             print("[SUCCESS] Projekcje zostały przebudowane.")
             print(json.dumps(response.json(), indent=4))
+        else:
+            print(f"[ERROR] Status: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"[EXCEPTION] {e}")
+
+def get_author_stats():
+    """GET /stats/authors/{author} — MultiStreamProjection demo"""
+    author = input("Nazwa autora: ").strip()
+    if not author:
+        print("[ERROR] Podaj nazwę autora.")
+        return
+    try:
+        response = requests.get(f"{API_URL}/stats/authors/{author}")
+        if response.status_code == 200:
+            stats = response.json()
+            print(f"\n[AuthorStats — MultiStreamProjection]")
+            print(f"  Autor:            {stats.get('id', '?')}")
+            print(f"  Wszystkie posty:  {stats.get('totalPosts', 0)}")
+            print(f"  Opublikowane:     {stats.get('publishedPosts', 0)}")
+            print(f"\nRaw JSON:\n{json.dumps(stats, indent=4)}")
+        elif response.status_code == 404:
+            print(f"[NOT FOUND] Brak statystyk dla autora '{author}'. Może projekcja Async jeszcze nie przetworzyła zdarzeń?")
         else:
             print(f"[ERROR] Status: {response.status_code}, {response.text}")
     except Exception as e:
@@ -82,7 +106,17 @@ def create_post():
     }
     
     try:
+        print(f"Request Body (POST /posts):\n{json.dumps(payload, indent=2)}")
         response = requests.post(f"{API_URL}/posts", json=payload)
+        print(f"API Response ({response.status_code}):")
+        if response.content:
+            try:
+                print(json.dumps(response.json(), indent=2))
+            except:
+                print(response.text)
+        else:
+            print("[Empty Response]")
+
         if response.status_code == 202:
             print("[SUCCESS] Komenda utworzenia wysłana (202 Accepted).")
         else:
@@ -107,7 +141,17 @@ def update_post():
     }
     
     try:
+        print(f"Request Body (PUT /posts/{post_id}):\n{json.dumps(payload, indent=2)}")
         response = requests.put(f"{API_URL}/posts/{post_id}", json=payload)
+        print(f"API Response ({response.status_code}):")
+        if response.content:
+            try:
+                print(json.dumps(response.json(), indent=2))
+            except:
+                print(response.text)
+        else:
+            print("[Empty Response / NoContent]")
+
         if response.status_code == 204:
             print(f"[SUCCESS] Wpis {post_id} został zaktualizowany.")
         else:
@@ -467,6 +511,8 @@ def main():
                 elif choice == '8':
                     rebuild_projections()
                 elif choice == '9':
+                    get_author_stats()
+                elif choice == '10':
                     # toggle debug off -> return full menu
                     print("Exiting debug mode")
                     DEBUG_MODE = False
@@ -494,39 +540,41 @@ def main():
                 elif choice == '8':
                     rebuild_projections()
                 elif choice == '9':
+                    get_author_stats()
+                elif choice == '10':
                     ok, details = api_health(API_URL)
                     if ok:
                         print(f"[HEALTH] API reachable: {details}")
                     else:
                         print(f"[HEALTH] API not reachable: {details}")
-                elif choice == '10':
+                elif choice == '11':
                     compose_file = DEFAULT_COMPOSE_PATH
                     ok, out = compose_up(compose_file)
                     if ok:
                         print("[DOCKER] compose up started")
                     else:
                         print(f"[DOCKER] compose up failed:\n{out}")
-                elif choice == '11':
+                elif choice == '12':
                     compose_file = DEFAULT_COMPOSE_PATH
                     ok, out = compose_down(compose_file)
                     if ok:
                         print("[DOCKER] compose down finished")
                     else:
                         print(f"[DOCKER] compose down failed:\n{out}")
-                elif choice == '12':
+                elif choice == '13':
                     compose_file = DEFAULT_COMPOSE_PATH
                     out = compose_logs(compose_file)
                     print(out)
-                elif choice == '13':
-                    run_all_orchestrate()
                 elif choice == '14':
+                    run_all_orchestrate()
+                elif choice == '15':
                     print("Koniec.")
                     break
                 else:
                     if choice != '':
                         print("Nieprawidłowa opcja.")
 
-            if choice not in ('14', ''):
+            if choice not in ('15', ''):
                 input("\nNaciśnij Enter, aby kontynuować...")
                 clear_screen()
             elif choice == '':
@@ -860,7 +908,7 @@ def parse_args(argv=None):
     parser = argparse.ArgumentParser(description="Marten Blog API tester CLI")
     parser.add_argument("--api-url", "-a", default=os.environ.get("TESTER_API_URL", API_URL), help="Base URL for API")
     parser.add_argument("--compose-file", "-c", default=os.environ.get("TESTER_COMPOSE_PATH", DEFAULT_COMPOSE_PATH), help="Path to docker-compose.yml")
-    parser.add_argument("--action", "-x", choices=["health","compose-up","compose-down","compose-logs","run-all","create-post","list-posts","run-scenario"], help="Non-interactive action to run")
+    parser.add_argument("--action", "-x", choices=["health","compose-up","compose-down","compose-logs","run-all","create-post","list-posts","run-scenario","presentation"], help="Non-interactive action to run")
     parser.add_argument("--no-teardown", action="store_true", help="When running orchestration, do not teardown compose")
     parser.add_argument("--in-container", action="store_true", help="Run scenarios/tests inside container runner if available")
     parser.add_argument("--scenario-file", "-s", default=os.path.join("scripts","scenarios","example.yaml"), help="Path to scenario YAML file")
@@ -916,6 +964,14 @@ def run_with_args(ns):
     if ns.action == "list-posts":
         list_posts()
         return 0
+    if ns.action == "presentation":
+        try:
+            from scripts import presentation_guide as pg
+            pg.run_presentation()
+            return 0
+        except Exception as e:
+            print("Error running presentation:", e)
+            return 6
     print("No action specified")
     return 1
 

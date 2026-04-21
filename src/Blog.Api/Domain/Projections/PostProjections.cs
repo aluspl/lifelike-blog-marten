@@ -6,7 +6,7 @@ namespace Blog.Api.Domain.Projections;
 public record PostDetails(Guid Id, string Title, string Content, string Author, bool IsPublished, DateTime? PublishedAt);
 public record PostSummary(Guid Id, string Title, string Author, bool IsPublished, DateTime? PublishedAt);
 
-public class PostDetailsProjection : SingleStreamProjection<PostDetails>
+public class PostDetailsProjection : SingleStreamProjection<PostDetails, Guid>
 {
     public PostDetails Create(PostCreated created) 
         => new(created.Id, created.Title, created.Content, created.Author, false, null);
@@ -21,7 +21,7 @@ public class PostDetailsProjection : SingleStreamProjection<PostDetails>
         => details with { Title = updated.Title, Content = updated.Content };
 }
 
-public class PostSummaryProjection : SingleStreamProjection<PostSummary>
+public class PostSummaryProjection : SingleStreamProjection<PostSummary, Guid>
 {
     public PostSummary Create(PostCreated created) 
         => new(created.Id, created.Title, created.Author, false, null);

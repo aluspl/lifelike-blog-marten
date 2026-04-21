@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marten Deep Dive - Event Sourcing & Projections</title>
+    <style>
+        :root {
+            --primary: #0078d4;
+            --secondary: #2b5797;
+            --bg: #f8f9fa;
+            --text: #202124;
+            --code-bg: #1e1e1e;
+            --accent: #d13438;
+            --success: #107c10;
+            --info: #005a9e;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 60px 40px;
+            box-sizing: border-box;
+            background: white;
+            border-bottom: 1px solid #eee;
+            page-break-after: always;
+        }
+
+        .content {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 { color: var(--primary); font-size: 3.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+        h2 { 
+            color: var(--secondary); 
+            font-size: 2.5rem; 
+            border-left: 8px solid var(--primary); 
+            padding-left: 20px; 
+            margin: 40px 0 20px 0;
+        }
+        h3 { color: var(--info); font-size: 1.8rem; margin-top: 30px; border-bottom: 1px solid #eee; }
+
+        p, li { font-size: 1.2rem; color: #444; }
+        ul, ol { margin-bottom: 20px; }
+
+        pre {
+            background: var(--code-bg);
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            margin: 20px 0;
+            position: relative;
+        }
+
+        pre::before {
+            content: "C# Code";
+            position: absolute;
+            top: 0;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            border-radius: 0 0 5px 5px;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .box-info { background: #e7f3ff; border-left: 6px solid var(--info); }
+        .box-warn { background: #fff4ce; border-left: 6px solid #ffb900; }
+        .box-success { background: #dff6dd; border-left: 6px solid var(--success); }
+
+        .key-concept {
+            font-weight: bold;
+            color: var(--primary);
+            background: #f0f7ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        @media print {
+            .slide { min-height: auto; padding: 30px; border: none; }
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2rem; }
+            pre { font-size: 0.9rem; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Intro -->
+    <section class="slide" style="justify-content: center; text-align: center;">
+        <div class="content">
+            <h1>Marten Deep Dive</h1>
+            <p style="font-size: 1.8rem; color: #666;">Architektura zdarzeń i projekcji w .NET 10</p>
+            <div style="margin-top: 60px; display: flex; justify-content: center; gap: 40px;">
+                <div class="box-success" style="padding: 20px 40px;">
+                    <strong>Event Store</strong><br>PostgreSQL
+                </div>
+                <div class="box-info" style="padding: 20px 40px;">
+                    <strong>Runtime</strong><br>.NET 10
+                </div>
+            </div>
+            <p style="margin-top: 80px; font-style: italic;">Kompletny przewodnik po implementacji wzorca Event Sourcing</p>
+        </div>
+    </section>
+
+    <!-- Slide 2: Zdarzenia Domenowe - Teoria -->
+    <section class="slide">
+        <div class="content">
+            <h2>1. Zdarzenia Domenowe (Domain Events)</h2>
+            <p>Zdarzenie to zapisany w czasie <span class="key-concept">fakt biznesowy</span>. W Event Sourcingu zdarzenia nie są skutkiem ubocznym zmiany stanu — one <strong>SĄ</strong> stanem.</p>
+            
+            <div class="grid">
+                <div>
+                    <h3>Charakterystyka:</h3>
+                    <ul>
+                        <li><strong>Czas przeszły:</strong> Nazwy takie jak <code>PostCreated</code>, nie <code>CreatePost</code>.</li>
+                        <li><strong>Niezmienność (Immutability):</strong> Raz zapisane zdarzenie nigdy nie ulega zmianie.</li>
+                        <li><strong>Brak intencji:</strong> Zdarzenie mówi co się stało, a nie co ma się stać.</li>
+                        <li><strong>Minimalizm:</strong> Przechowuje tylko "deltę" zmiany (np. tylko nowe ID i autora).</li>
+                    </ul>
+                </div>
+                <div class="box-info">
+                    <strong>Wskazówka:</strong> Używaj recordów w C#. Zapewniają one semantykę wartości i niezmienność "z pudełka".
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Zdarzenia - Przykład Kodu -->
+    <section class="slide">
+        <div class="content">
+            <h2>Implementacja Zdarzeń</h2>
+            <p>Spójrzmy na kompletny zestaw zdarzeń dla naszego systemu blogowego:</p>
+            
+            <pre>
+namespace Blog.Api.Domain.Events;
+
+// Inicjalizacja strumienia - zawiera komplet danych startowych
+public record PostCreated(
+    Guid Id, 
+    string Title, 
+    string Content, 
+    string Author
+);
+
+// Zmiana stanu cząstkowego - tylko to, co faktycznie uległo edycji
+public record PostUpdated(
+    Guid Id, 
+    string Title, 
+    string Content
+);
+
+// Zdarzenie statusowe - niesie informację o czasie publikacji
+public record PostPublished(
+    Guid Id, 
+    DateTime PublishedAt
+);
+
+// Zdarzenie "negatywne" - cofnięcie stanu
+public record PostUnpublished(
+    Guid Id
+);</pre>
+        </div>
+    </section>
+
+    <!-- Slide 4: Jak Marten przechowuje zdarzenia? -->
+    <section class="slide">
+        <div class="content">
+            <h2>Gdzie trafiają dane? (mt_events)</h2>
+            <p>Marten nie tworzy oddzielnych tabel dla każdego typu zdarzenia. Wszystko trafia do zoptymalizowanej tabeli <span class="key-concept">mt_events</span>.</p>
+            
+            <div class="box-warn">
+                <strong>Struktura tabeli mt_events:</strong>
+                <ul>
+                    <li><code>seq_id</code>: Globalny, rosnący numer sekwencyjny (BigInt).</li>
+                    <li><code>stream_id</code>: ID naszego agregatu (np. ID Posta).</li>
+                    <li><code>version</code>: Numer wersji wewnątrz strumienia (1, 2, 3...).</li>
+                    <li><code>data</code>: Pełny JSON zdarzenia.</li>
+                    <li><code>type</code>: Nazwa typu (np. "post_created").</li>
+                </ul>
+            </div>
+            <p>Dzięki temu Marten może odczytać całą historię obiektu jednym zapytaniem: <br>
+            <code>SELECT data FROM mt_events WHERE stream_id = ? ORDER BY version</code></p>
+        </div>
+    </section>
+
+    <!-- Slide 5: Projekcje - Serce Odczytu -->
+    <section class="slide">
+        <div class="content">
+            <h2>2. Projekcje (Read Models)</h2>
+            <p>Skoro dane to historia zdarzeń, jak wyświetlić "aktualny tytuł"? Do tego służą <span class="key-concept">Projekcje</span>.</p>
+            
+            <div class="grid">
+                <div>
+                    <h3>Typy Projekcji w Marten:</h3>
+                    <ul>
+                        <li><strong>Inline:</strong> Aktualizowana w tej samej transakcji co zdarzenie. Gwarantuje spójność (Strong Consistency).</li>
+                        <li><strong>Async:</strong> Przetwarzana w tle przez proces Daemon. Skalowalna, ale z opóźnieniem (Eventual Consistency).</li>
+                        <li><strong>Live:</strong> Budowana w pamięci tylko na czas żądania (nie zapisywana w bazie).</li>
+                    </ul>
+                </div>
+                <div class="box-success">
+                    <strong>Zasada:</strong> Zdarzenia są dla zapisu, projekcje są dla odczytu (CQRS).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Projekcja - Przykład Deep Dive -->
+    <section class="slide">
+        <div class="content">
+            <h2>Anatomia Projekcji</h2>
+            <p>Poniżej znajduje się pełna implementacja <code>PostDetailsProjection</code>. Zwróć uwagę na metody <code>Create</code> i <code>Apply</code>.</p>
+            
+            <pre>
+public class PostDetailsProjection : SingleStreamProjection&lt;PostDetails&gt;
+{
+    // Create: Wywoływane TYLKO dla pierwszego zdarzenia w strumieniu
+    public PostDetails Create(PostCreated created) 
+    {
+        return new PostDetails(
+            created.Id, 
+            created.Title, 
+            created.Content, 
+            created.Author, 
+            IsPublished: false, 
+            PublishedAt: null
+        );
+    }
+
+    // Apply: Wywoływane dla każdego kolejnego zdarzenia, modyfikuje istniejący stan
+    public PostDetails Apply(PostUpdated updated, PostDetails current)
+        => current with { 
+            Title = updated.Title, 
+            Content = updated.Content 
+        };
+
+    public PostDetails Apply(PostPublished published, PostDetails current)
+        => current with { 
+            IsPublished = true, 
+            PublishedAt = published.PublishedAt 
+        };
+}</pre>
+        </div>
+    </section>
+
+    <!-- Slide 7: Rebuilding i Ewolucja -->
+    <section class="slide">
+        <div class="content">
+            <h2>3. Rebuilding: Elastyczność bez granic</h2>
+            <p>Największa zaleta Event Sourcingu. Co jeśli po roku klient prosi o statystykę "Liczba edycji posta"?</p>
+            
+            <div class="step-box">
+                <strong>W CRUD:</strong> Musisz dodać kolumnę <code>EditCount</code> i zgadywać dane historyczne lub zostawić puste pola.
+            </div>
+            
+            <div class="step-box" style="background: #dff6dd; border-color: var(--success);">
+                <strong>W Marten:</strong> 
+                <ol>
+                    <li>Dodajesz pole <code>EditCount</code> do projekcji.</li>
+                    <li>W metodzie <code>Apply(PostUpdated...)</code> dodajesz: <code>EditCount + 1</code>.</li>
+                    <li>Uruchamiasz <strong>Rebuild</strong>.</li>
+                    <li>Marten kasuje tabelę projekcji i buduje ją na nowo, czytając historię od pierwszego dnia.</li>
+                </ol>
+            </div>
+            
+            <pre>
+// Komenda CLI / API wyzwalająca przebudowanie stanu:
+await daemon.RebuildProjectionAsync&lt;PostDetails&gt;(cancellationToken);</pre>
+        </div>
+    </section>
+
+    <!-- Slide 8: Beyond SingleStream -->
+    <section class="slide">
+        <div class="content">
+            <h2>Więcej niż SingleStream</h2>
+            <p>Marten to nie tylko rzutowanie 1:1. Możemy budować znacznie bardziej zaawansowane widoki:</p>
+            
+            <div class="grid">
+                <div class="box-info">
+                    <strong>Multi-Stream Projections</strong>
+                    <p style="font-size: 1rem;">Agregują dane z różnych strumieni w jeden dokument (np. statystyki wszystkich autorów). Używa się do tego klasy <code>ViewProjection</code>.</p>
+                </div>
+                <div class="box-success">
+                    <strong>Flat Table (Entity)</strong>
+                    <p style="font-size: 1rem;">Rzutowanie zdarzeń na płaskie tabele SQL zamiast JSON. Idealne pod raportowanie i systemy BI.</p>
+                </div>
+            </div>
+
+            <h3>Inne zaawansowane możliwości:</h3>
+            <ul>
+                <li><strong>Custom IProjection:</strong> Pełna kontrola nad logiką projekcji i możliwość integracji z zewnętrznymi systemami (np. Redis, ElasticSearch).</li>
+                <li><strong>Async Daemon:</strong> Przetwarzanie zdarzeń asynchronicznie w tle dla maksymalnej wydajności zapisu (High Scalability).</li>
+                <li><strong>Live Aggregation:</strong> Budowanie stanu "w locie" w pamięci (z historii zdarzeń) bez zapisywania wyniku w bazie danych.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 9: Podsumowanie Architektoniczne -->
+    <section class="slide">
+        <div class="content">
+            <h2>Podsumowanie</h2>
+            <div class="grid">
+                <div class="box-info">
+                    <strong>Write Side (Zapis)</strong>
+                    <ul>
+                        <li>Walidacja komendy.</li>
+                        <li>Ładowanie agregatu (opcjonalnie).</li>
+                        <li>Append zdarzenia do strumienia.</li>
+                        <li>Transakcyjny zapis do mt_events.</li>
+                    </ul>
+                </div>
+                <div class="box-success">
+                    <strong>Read Side (Odczyt)</strong>
+                    <ul>
+                        <li>Automatyczna projekcja Inline.</li>
+                        <li>Szybkie zapytania po ID lub polach JSON.</li>
+                        <li>Możliwość budowania wielu widoków z tych samych danych.</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 50px; font-weight: bold; font-size: 1.5rem;">Event Sourcing to nie tylko technologia, to sposób myślenia o danych jako o historii.</p>
+            <footer style="margin-top: 40px;">Marten Blog API Project - Deep Dive Presentation</footer>
+        </div>
+    </section>
+
+</body>
+</html>

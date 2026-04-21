@@ -28,8 +28,10 @@ public class BlogIntegrationTests : IAsyncLifetime
                 services.AddMarten(options =>
                 {
                     options.Connection(_postgresContainer.GetConnectionString() + ";Ssl Mode=Disable");
-                    options.Projections.Add<PostDetailsProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
-                    options.Projections.Add<PostSummaryProjection>(Marten.Events.Projections.ProjectionLifecycle.Inline);
+                    options.Projections.Add<PostDetailsProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Inline);
+                    options.Projections.Add<PostSummaryProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Inline);
+                    // Inline w testach (zamiast Async) — brak potrzeby daemona
+                    options.Projections.Add<AuthorStatsProjection>(JasperFx.Events.Projections.ProjectionLifecycle.Inline);
                 }).UseLightweightSessions();
             });
         });
@@ -144,5 +146,33 @@ public class BlogIntegrationTests : IAsyncLifetime
             s.Post.Url("/admin/rebuild");
             s.StatusCodeShouldBe(200);
         });
+    }
+
+    [Fact]
+    public async Task AuthorStats_Should_Aggregate_Posts_Across_Streams()
+    {
+        // Arrange: dwa posty tego samego autora (dwa osobne streamy)
+        var store = _host.Services.GetRequiredService<IDocumentStore>();
+        using var session = store.LightweightSession();
+        var author = "TestAuthor_" + Guid.NewGuid().ToString("N")[..8];
+
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        session.Events.StartStream<Post>(id1, new PostCreated(id1, "Post 1", "Content", author));
+        session.Events.StartStream<Post>(id2, new PostCreated(id2, "Post 2", "Content", author));
+        await session.SaveChangesAsync();
+
+        // Act
+        var result = await _host.Scenario(s =>
+        {
+            s.Get.Url($"/stats/authors/{author}");
+            s.StatusCodeShouldBe(200);
+        });
+
+        // Assert: MultiStreamProjection zagregowała zdarzenia z 2 streamów
+        var stats = result.ReadAsJson<AuthorStats>();
+        stats.Should().NotBeNull();
+        stats!.Id.Should().Be(author);
+        stats.TotalPosts.Should().Be(2);
     }
 }
