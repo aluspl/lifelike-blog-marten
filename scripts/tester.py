@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import json
 import os
@@ -10,10 +11,10 @@ import time
 import requests
 
 # Default API URL (can be overridden via --api-url or env TESTER_API_URL)
-API_URL = os.environ.get("TESTER_API_URL", "http://localhost:5000")
+API_URL = os.environ.get("TESTER_API_URL", "http://localhost:5501")
 
 # Path to docker-compose directory / file (can be overridden)
-DEFAULT_COMPOSE_PATH = os.environ.get("TESTER_COMPOSE_PATH", "@docker/docker-compose.yml")
+DEFAULT_COMPOSE_PATH = os.environ.get("TESTER_COMPOSE_PATH", "docker/docker-compose.yml")
 # Fallback candidate locations for docker-compose if the default is missing
 CANDIDATE_COMPOSE_FILES = [
     DEFAULT_COMPOSE_PATH,
@@ -401,6 +402,10 @@ def test_flows_1_to_5(auto_start: bool = True, compose_file: str | None = None, 
 
     return result
 
+def clear_screen():
+    """Clear the terminal screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def main():
     global DEBUG_MODE, API_URL
     # Ensure DEBUG_MODE is treated as module global before any reference
@@ -442,84 +447,94 @@ def main():
         print("[STARTUP] API is healthy — continuing to interactive menu.")
 
     while True:
-        choice = show_menu()
-        if DEBUG_MODE:
-            if choice == '1':
-                create_post()
-            elif choice == '2':
-                list_posts()
-            elif choice == '3':
-                update_post()
-            elif choice == '4':
-                publish_post()
-            elif choice == '5':
-                unpublish_post()
-            elif choice == '6':
-                view_details()
-            elif choice == '7':
-                view_events()
-            elif choice == '8':
-                rebuild_projections()
-            elif choice == '9':
-                # toggle debug off -> return full menu
-                print("Exiting debug mode")
-                DEBUG_MODE = False
-            elif choice == '0':
-                print("Exiting debug mode")
-                DEBUG_MODE = False
+        try:
+            choice = show_menu()
+            if DEBUG_MODE:
+                if choice == '1':
+                    create_post()
+                elif choice == '2':
+                    list_posts()
+                elif choice == '3':
+                    update_post()
+                elif choice == '4':
+                    publish_post()
+                elif choice == '5':
+                    unpublish_post()
+                elif choice == '6':
+                    view_details()
+                elif choice == '7':
+                    view_events()
+                elif choice == '8':
+                    rebuild_projections()
+                elif choice == '9':
+                    # toggle debug off -> return full menu
+                    print("Exiting debug mode")
+                    DEBUG_MODE = False
+                elif choice == '0':
+                    print("Exiting debug mode")
+                    DEBUG_MODE = False
+                else:
+                    if choice != '':
+                        print("Nieprawidłowa opcja (debug).")
             else:
-                print("Nieprawidłowa opcja (debug).")
-            continue
+                if choice == '1':
+                    create_post()
+                elif choice == '2':
+                    list_posts()
+                elif choice == '3':
+                    update_post()
+                elif choice == '4':
+                    publish_post()
+                elif choice == '5':
+                    unpublish_post()
+                elif choice == '6':
+                    view_details()
+                elif choice == '7':
+                    view_events()
+                elif choice == '8':
+                    rebuild_projections()
+                elif choice == '9':
+                    ok, details = api_health(API_URL)
+                    if ok:
+                        print(f"[HEALTH] API reachable: {details}")
+                    else:
+                        print(f"[HEALTH] API not reachable: {details}")
+                elif choice == '10':
+                    compose_file = DEFAULT_COMPOSE_PATH
+                    ok, out = compose_up(compose_file)
+                    if ok:
+                        print("[DOCKER] compose up started")
+                    else:
+                        print(f"[DOCKER] compose up failed:\n{out}")
+                elif choice == '11':
+                    compose_file = DEFAULT_COMPOSE_PATH
+                    ok, out = compose_down(compose_file)
+                    if ok:
+                        print("[DOCKER] compose down finished")
+                    else:
+                        print(f"[DOCKER] compose down failed:\n{out}")
+                elif choice == '12':
+                    compose_file = DEFAULT_COMPOSE_PATH
+                    out = compose_logs(compose_file)
+                    print(out)
+                elif choice == '13':
+                    run_all_orchestrate()
+                elif choice == '14':
+                    print("Koniec.")
+                    break
+                else:
+                    if choice != '':
+                        print("Nieprawidłowa opcja.")
 
-        if choice == '1':
-            create_post()
-        elif choice == '2':
-            list_posts()
-        elif choice == '3':
-            update_post()
-        elif choice == '4':
-            publish_post()
-        elif choice == '5':
-            unpublish_post()
-        elif choice == '6':
-            view_details()
-        elif choice == '7':
-            view_events()
-        elif choice == '8':
-            rebuild_projections()
-        elif choice == '9':
-            ok, details = api_health(API_URL)
-            if ok:
-                print(f"[HEALTH] API reachable: {details}")
-            else:
-                print(f"[HEALTH] API not reachable: {details}")
-        elif choice == '10':
-            compose_file = DEFAULT_COMPOSE_PATH
-            ok, out = compose_up(compose_file)
-            if ok:
-                print("[DOCKER] compose up started")
-            else:
-                print(f"[DOCKER] compose up failed:\n{out}")
-        elif choice == '11':
-            compose_file = DEFAULT_COMPOSE_PATH
-            ok, out = compose_down(compose_file)
-            if ok:
-                print("[DOCKER] compose down finished")
-            else:
-                print(f"[DOCKER] compose down failed:\n{out}")
-        elif choice == '12':
-            compose_file = DEFAULT_COMPOSE_PATH
-            out = compose_logs(compose_file)
-            print(out)
-        elif choice == '13':
-            run_all_orchestrate()
-        elif choice == '14':
+            if choice not in ('14', ''):
+                input("\nNaciśnij Enter, aby kontynuować...")
+                clear_screen()
+            elif choice == '':
+                clear_screen()
+
+        except KeyboardInterrupt:
+            print("\nPrzerwano przez użytkownika (Ctrl+C). Wyjście...")
             break
-        else:
-            print("Nieprawidłowa opcja.")
-
-        if choice not in ('13', '14'):
-            input("\nNaciśnij Enter, aby kontynuować...")
 
 
 def api_health(api_url, retries=5, delay=2):

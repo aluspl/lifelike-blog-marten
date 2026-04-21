@@ -4431,3 +4431,579 @@ docker-postgres-1          postgres:16              "docker-entrypoint.s…"   p
 docker-python-observer-1   docker-python-observer   "python app.py"          python-observer   13 days ago   Up 42 minutes             
 
 
+[2026-04-21T09:29:36.794865Z] blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2]
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Batch execution completed (duration=15ms): [
+blog-api-1  |       select column_name, data_type, character_maximum_length, udt_name
+blog-api-1  |       from information_schema.columns where table_schema = $1 and table_name = $2
+blog-api-1  |       order by ordinal_position, select kcu.column_name as key_column
+blog-api-1  |       from information_schema.table_constraints tco
+blog-api-1  |                join information_schema.key_column_usage kcu
+blog-api-1  |                     on kcu.constraint_name = tco.constraint_name
+blog-api-1  |                         and kcu.constraint_schema = tco.constraint_schema
+blog-api-1  |                         and kcu.constraint_name = tco.constraint_name
+blog-api-1  |       where tco.constraint_type = 'PRIMARY KEY' and kcu.table_schema = $1 and kcu.table_name = $2
+blog-api-1  |       order by kcu.ordinal_position, SELECT *
+blog-api-1  |       FROM (
+blog-api-1  |           SELECT
+blog-api-1  |             R.rolname                AS user_name,
+blog-api-1  |             ns.nspname               AS schema_name,
+blog-api-1  |             pg_catalog.textin(pg_catalog.regclassout(idx.indrelid :: REGCLASS)) AS table_name,
+blog-api-1  |             i.relname                AS index_name,
+blog-api-1  |             pg_get_indexdef(i.oid) as ddl,
+blog-api-1  |             idx.indisunique          AS is_unique,
+blog-api-1  |             idx.indisprimary         AS is_primary,
+blog-api-1  |             am.amname                AS index_type,
+blog-api-1  |             idx.indkey,
+blog-api-1  |                  ARRAY(
+blog-api-1  |                      SELECT pg_get_indexdef(idx.indexrelid, k + 1, TRUE)
+blog-api-1  |                      FROM
+blog-api-1  |                        generate_subscripts(idx.indkey, 1) AS k
+blog-api-1  |                      ORDER BY k
+blog-api-1  |                  ) AS index_keys,
+blog-api-1  |             (idx.indexprs IS NOT NULL) OR (idx.indkey::int[] @> array[0]) AS is_functional,
+blog-api-1  |             idx.indpred IS NOT NULL AS is_partial
+blog-api-1  |           FROM pg_index AS idx
+blog-api-1  |             JOIN pg_class AS i
+blog-api-1  |               ON i.oid = idx.indexrelid
+blog-api-1  |             JOIN pg_am AS am
+blog-api-1  |               ON i.relam = am.oid
+blog-api-1  |             JOIN pg_namespace AS NS ON i.relnamespace = NS.OID
+blog-api-1  |             JOIN pg_roles AS R ON i.relowner = r.oid
+blog-api-1  |           WHERE
+blog-api-1  |             nspname = $1 AND
+blog-api-1  |             NOT nspname LIKE 'pg%'
+blog-api-1  |       ) ind
+blog-api-1  |       WHERE
+blog-api-1  |             ind.table_name = $2 OR
+blog-api-1  |             ind.table_name = $3, SELECT c.conname                                     AS constraint_name,
+blog-api-1  |              c.contype                                     AS constraint_type,
+blog-api-1  |              sch.nspname                                   AS schema_name,
+blog-api-1  |              tbl.relname                                   AS table_name,
+blog-api-1  |              ARRAY_AGG(col.attname ORDER BY u.attposition) AS columns,
+blog-api-1  |              pg_get_constraintdef(c.oid)                   AS definition
+blog-api-1  |       FROM pg_constraint c
+blog-api-1  |              JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
+blog-api-1  |              JOIN pg_class tbl ON tbl.oid = c.conrelid
+blog-api-1  |              JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
+blog-api-1  |              JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
+blog-api-1  |       WHERE
+blog-api-1  |       	c.contype = 'f' and
+blog-api-1  |       	sch.nspname = $1 and
+blog-api-1  |       	tbl.relname = $2
+blog-api-1  |       GROUP BY constraint_name, constraint_type, schema_name, table_name, definition, SHOW max_identifier_length, select
+blog-api-1  |           col.column_name,
+blog-api-1  |           partition_strategy
+blog-api-1  |       from
+blog-api-1  |           (select
+blog-api-1  |                partrelid,
+blog-api-1  |                partnatts,
+blog-api-1  |                case partstrat
+blog-api-1  |                    when 'l' then 'list'
+blog-api-1  |                    when 'h' then 'hash'
+blog-api-1  |                    when 'r' then 'range' end as partition_strategy,
+blog-api-1  |                unnest(partattrs) column_index
+blog-api-1  |            from
+blog-api-1  |                pg_partitioned_table) pt
+blog-api-1  |               join
+blog-api-1  |           pg_class par
+blog-api-1  |           on
+blog-api-1  |                   par.oid = pt.partrelid
+blog-api-1  |               join
+blog-api-1  |           information_schema.columns col
+blog-api-1  |           on
+blog-api-1  |                       col.table_schema = par.relnamespace::regnamespace::text
+blog-api-1  |                   and col.table_name = par.relname
+blog-api-1  |                   and ordinal_position = pt.column_index
+blog-api-1  |       where
+blog-api-1  |           col.table_schema = $1 and table_name = $2
+blog-api-1  |       order by column_index, select pt.relname as partition_name,
+blog-api-1  |                 pg_get_expr(pt.relpartbound, pt.oid, true) as partition_expression
+blog-api-1  |          from pg_class base_tb
+blog-api-1  |                   join pg_inherits i on i.inhparent = base_tb.oid
+blog-api-1  |                   join pg_class pt on pt.oid = i.inhrelid
+blog-api-1  |          where base_tb.relname = $1 and base_tb.relnamespace = $2::regnamespace::oid, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2]
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=25ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  | 
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  | 
+postgres-1  | Data page checksums are disabled.
+postgres-1  | 
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default max_connections ... 100
+postgres-1  | selecting default shared_buffers ... 128MB
+postgres-1  | selecting default time zone ... Etc/UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+postgres-1  | performing post-bootstrap initialization ... ok
+postgres-1  | initdb: warning: enabling "trust" authentication for local connections
+postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres-1  | syncing data to disk ... ok
+postgres-1  | 
+postgres-1  | 
+postgres-1  | Success. You can now start the database server using:
+postgres-1  | 
+postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1  | 
+postgres-1  | waiting for server to start....2026-04-21 07:29:32.964 UTC [49] LOG:  starting PostgreSQL 16.10 (Debian 16.10-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-1  | 2026-04-21 07:29:32.965 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-04-21 07:29:32.967 UTC [52] LOG:  database system was shut down at 2026-04-21 07:29:32 UTC
+postgres-1  | 2026-04-21 07:29:32.970 UTC [49] LOG:  database system is ready to accept connections
+postgres-1  |  done
+postgres-1  | server started
+postgres-1  | CREATE DATABASE
+postgres-1  | 
+postgres-1  | 
+postgres-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1  | 
+postgres-1  | waiting for server to shut down....2026-04-21 07:29:33.128 UTC [49] LOG:  received fast shutdown request
+postgres-1  | 2026-04-21 07:29:33.129 UTC [49] LOG:  aborting any active transactions
+postgres-1  | 2026-04-21 07:29:33.130 UTC [49] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+postgres-1  | 2026-04-21 07:29:33.130 UTC [50] LOG:  shutting down
+postgres-1  | 2026-04-21 07:29:33.130 UTC [50] LOG:  checkpoint starting: shutdown immediate
+postgres-1  | 2026-04-21 07:29:33.153 UTC [50] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.016 s, total=0.024 s; sync files=301, longest=0.006 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/191F088, redo lsn=0/191F088
+postgres-1  | 2026-04-21 07:29:33.155 UTC [49] LOG:  database system is shut down
+postgres-1  |  done
+postgres-1  | server stopped
+postgres-1  | 
+postgres-1  | PostgreSQL init process complete; ready for start up.
+postgres-1  | 
+postgres-1  | 2026-04-21 07:29:33.241 UTC [1] LOG:  starting PostgreSQL 16.10 (Debian 16.10-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-1  | 2026-04-21 07:29:33.244 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2026-04-21 07:29:33.244 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2026-04-21 07:29:33.246 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-04-21 07:29:33.248 UTC [65] LOG:  database system was shut down at 2026-04-21 07:29:33 UTC
+postgres-1  | 2026-04-21 07:29:33.251 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2026-04-21 07:34:33.249 UTC [63] LOG:  checkpoint starting: time
+postgres-1  | 2026-04-21 07:34:48.941 UTC [63] LOG:  checkpoint complete: wrote 154 buffers (0.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=15.677 s, sync=0.010 s, total=15.693 s; sync files=83, longest=0.001 s, average=0.001 s; distance=704 kB, estimate=704 kB; lsn=0/19CF3C8, redo lsn=0/19CF390
+postgres-1  | 2026-04-21 07:59:34.115 UTC [63] LOG:  checkpoint starting: time
+postgres-1  | 2026-04-21 07:59:35.182 UTC [63] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.047 s, sync=0.007 s, total=1.067 s; sync files=11, longest=0.004 s, average=0.001 s; distance=10 kB, estimate=635 kB; lsn=0/19D1D70, redo lsn=0/19D1D38
+
+
+[2026-04-21T09:30:12.189455Z] postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  | 
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  | 
+postgres-1  | Data page checksums are disabled.
+postgres-1  | 
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default max_connections ... 100
+postgres-1  | selecting default shared_buffers ... 128MB
+postgres-1  | selecting default time zone ... Etc/UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+postgres-1  | performing post-bootstrap initialization ... ok
+postgres-1  | initdb: warning: enabling "trust" authentication for local connections
+postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres-1  | syncing data to disk ... ok
+postgres-1  | 
+postgres-1  | 
+postgres-1  | Success. You can now start the database server using:
+postgres-1  | 
+postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1  | 
+postgres-1  | waiting for server to start....2026-04-21 07:29:32.964 UTC [49] LOG:  starting PostgreSQL 16.10 (Debian 16.10-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-1  | 2026-04-21 07:29:32.965 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-04-21 07:29:32.967 UTC [52] LOG:  database system was shut down at 2026-04-21 07:29:32 UTC
+postgres-1  | 2026-04-21 07:29:32.970 UTC [49] LOG:  database system is ready to accept connections
+postgres-1  |  done
+postgres-1  | server started
+postgres-1  | CREATE DATABASE
+postgres-1  | 
+postgres-1  | 
+postgres-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1  | 
+postgres-1  | waiting for server to shut down....2026-04-21 07:29:33.128 UTC [49] LOG:  received fast shutdown request
+postgres-1  | 2026-04-21 07:29:33.129 UTC [49] LOG:  aborting any active transactions
+postgres-1  | 2026-04-21 07:29:33.130 UTC [49] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+postgres-1  | 2026-04-21 07:29:33.130 UTC [50] LOG:  shutting down
+postgres-1  | 2026-04-21 07:29:33.130 UTC [50] LOG:  checkpoint starting: shutdown immediate
+postgres-1  | 2026-04-21 07:29:33.153 UTC [50] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.016 s, total=0.024 s; sync files=301, longest=0.006 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/191F088, redo lsn=0/191F088
+postgres-1  | 2026-04-21 07:29:33.155 UTC [49] LOG:  database system is shut down
+postgres-1  |  done
+postgres-1  | server stopped
+postgres-1  | 
+postgres-1  | PostgreSQL init process complete; ready for start up.
+postgres-1  | 
+postgres-1  | 2026-04-21 07:29:33.241 UTC [1] LOG:  starting PostgreSQL 16.10 (Debian 16.10-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+postgres-1  | 2026-04-21 07:29:33.244 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2026-04-21 07:29:33.244 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2026-04-21 07:29:33.246 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-04-21 07:29:33.248 UTC [65] LOG:  database system was shut down at 2026-04-21 07:29:33 UTC
+postgres-1  | 2026-04-21 07:29:33.251 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2026-04-21 07:34:33.249 UTC [63] LOG:  checkpoint starting: time
+postgres-1  | 2026-04-21 07:34:48.941 UTC [63] LOG:  checkpoint complete: wrote 154 buffers (0.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=15.677 s, sync=0.010 s, total=15.693 s; sync files=83, longest=0.001 s, average=0.001 s; distance=704 kB, estimate=704 kB; lsn=0/19CF3C8, redo lsn=0/19CF390
+postgres-1  | 2026-04-21 07:59:34.115 UTC [63] LOG:  checkpoint starting: time
+postgres-1  | 2026-04-21 07:59:35.182 UTC [63] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.047 s, sync=0.007 s, total=1.067 s; sync files=11, longest=0.004 s, average=0.001 s; distance=10 kB, estimate=635 kB; lsn=0/19D1D70, redo lsn=0/19D1D38
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2]
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Batch execution completed (duration=15ms): [
+blog-api-1  |       select column_name, data_type, character_maximum_length, udt_name
+blog-api-1  |       from information_schema.columns where table_schema = $1 and table_name = $2
+blog-api-1  |       order by ordinal_position, select kcu.column_name as key_column
+blog-api-1  |       from information_schema.table_constraints tco
+blog-api-1  |                join information_schema.key_column_usage kcu
+blog-api-1  |                     on kcu.constraint_name = tco.constraint_name
+blog-api-1  |                         and kcu.constraint_schema = tco.constraint_schema
+blog-api-1  |                         and kcu.constraint_name = tco.constraint_name
+blog-api-1  |       where tco.constraint_type = 'PRIMARY KEY' and kcu.table_schema = $1 and kcu.table_name = $2
+blog-api-1  |       order by kcu.ordinal_position, SELECT *
+blog-api-1  |       FROM (
+blog-api-1  |           SELECT
+blog-api-1  |             R.rolname                AS user_name,
+blog-api-1  |             ns.nspname               AS schema_name,
+blog-api-1  |             pg_catalog.textin(pg_catalog.regclassout(idx.indrelid :: REGCLASS)) AS table_name,
+blog-api-1  |             i.relname                AS index_name,
+blog-api-1  |             pg_get_indexdef(i.oid) as ddl,
+blog-api-1  |             idx.indisunique          AS is_unique,
+blog-api-1  |             idx.indisprimary         AS is_primary,
+blog-api-1  |             am.amname                AS index_type,
+blog-api-1  |             idx.indkey,
+blog-api-1  |                  ARRAY(
+blog-api-1  |                      SELECT pg_get_indexdef(idx.indexrelid, k + 1, TRUE)
+blog-api-1  |                      FROM
+blog-api-1  |                        generate_subscripts(idx.indkey, 1) AS k
+blog-api-1  |                      ORDER BY k
+blog-api-1  |                  ) AS index_keys,
+blog-api-1  |             (idx.indexprs IS NOT NULL) OR (idx.indkey::int[] @> array[0]) AS is_functional,
+blog-api-1  |             idx.indpred IS NOT NULL AS is_partial
+blog-api-1  |           FROM pg_index AS idx
+blog-api-1  |             JOIN pg_class AS i
+blog-api-1  |               ON i.oid = idx.indexrelid
+blog-api-1  |             JOIN pg_am AS am
+blog-api-1  |               ON i.relam = am.oid
+blog-api-1  |             JOIN pg_namespace AS NS ON i.relnamespace = NS.OID
+blog-api-1  |             JOIN pg_roles AS R ON i.relowner = r.oid
+blog-api-1  |           WHERE
+blog-api-1  |             nspname = $1 AND
+blog-api-1  |             NOT nspname LIKE 'pg%'
+blog-api-1  |       ) ind
+blog-api-1  |       WHERE
+blog-api-1  |             ind.table_name = $2 OR
+blog-api-1  |             ind.table_name = $3, SELECT c.conname                                     AS constraint_name,
+blog-api-1  |              c.contype                                     AS constraint_type,
+blog-api-1  |              sch.nspname                                   AS schema_name,
+blog-api-1  |              tbl.relname                                   AS table_name,
+blog-api-1  |              ARRAY_AGG(col.attname ORDER BY u.attposition) AS columns,
+blog-api-1  |              pg_get_constraintdef(c.oid)                   AS definition
+blog-api-1  |       FROM pg_constraint c
+blog-api-1  |              JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
+blog-api-1  |              JOIN pg_class tbl ON tbl.oid = c.conrelid
+blog-api-1  |              JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
+blog-api-1  |              JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
+blog-api-1  |       WHERE
+blog-api-1  |       	c.contype = 'f' and
+blog-api-1  |       	sch.nspname = $1 and
+blog-api-1  |       	tbl.relname = $2
+blog-api-1  |       GROUP BY constraint_name, constraint_type, schema_name, table_name, definition, SHOW max_identifier_length, select
+blog-api-1  |           col.column_name,
+blog-api-1  |           partition_strategy
+blog-api-1  |       from
+blog-api-1  |           (select
+blog-api-1  |                partrelid,
+blog-api-1  |                partnatts,
+blog-api-1  |                case partstrat
+blog-api-1  |                    when 'l' then 'list'
+blog-api-1  |                    when 'h' then 'hash'
+blog-api-1  |                    when 'r' then 'range' end as partition_strategy,
+blog-api-1  |                unnest(partattrs) column_index
+blog-api-1  |            from
+blog-api-1  |                pg_partitioned_table) pt
+blog-api-1  |               join
+blog-api-1  |           pg_class par
+blog-api-1  |           on
+blog-api-1  |                   par.oid = pt.partrelid
+blog-api-1  |               join
+blog-api-1  |           information_schema.columns col
+blog-api-1  |           on
+blog-api-1  |                       col.table_schema = par.relnamespace::regnamespace::text
+blog-api-1  |                   and col.table_name = par.relname
+blog-api-1  |                   and ordinal_position = pt.column_index
+blog-api-1  |       where
+blog-api-1  |           col.table_schema = $1 and table_name = $2
+blog-api-1  |       order by column_index, select pt.relname as partition_name,
+blog-api-1  |                 pg_get_expr(pt.relpartbound, pt.oid, true) as partition_expression
+blog-api-1  |          from pg_class base_tb
+blog-api-1  |                   join pg_inherits i on i.inhparent = base_tb.oid
+blog-api-1  |                   join pg_class pt on pt.oid = i.inhrelid
+blog-api-1  |          where base_tb.relname = $1 and base_tb.relnamespace = $2::regnamespace::oid, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2, SELECT pg_get_functiondef(pg_proc.oid)
+blog-api-1  |       FROM pg_proc JOIN pg_namespace as ns ON pg_proc.pronamespace = ns.oid WHERE ns.nspname = $1 and proname = $2, SELECT format('DROP FUNCTION IF EXISTS %s.%s(%s);'
+blog-api-1  |                    ,n.nspname
+blog-api-1  |                    ,p.proname
+blog-api-1  |                    ,pg_get_function_identity_arguments(p.oid))
+blog-api-1  |       FROM   pg_proc p
+blog-api-1  |       LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+blog-api-1  |       WHERE  p.proname = $1
+blog-api-1  |       AND    n.nspname = $2]
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=25ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+blog-api-1  | info: Npgsql.Command[2001]
+blog-api-1  |       Command execution completed (duration=1ms): select d.data from public.mt_doc_postsummary as d
+
+
+[2026-04-21T09:30:17.262456Z] NAME                IMAGE             COMMAND                  SERVICE    CREATED             STATUS                 PORTS
+docker-blog-api-1   docker-blog-api   "dotnet Blog.Api.dll"    blog-api   About an hour ago   Up About an hour       0.0.0.0:5501->8080/tcp, 0.0.0.0:5502->8080/tcp, [::]:5501->8080/tcp, [::]:5502->8080/tcp
+docker-postgres-1   postgres:16       "docker-entrypoint.s…"   postgres   2 hours ago         Up 2 hours (healthy)   0.0.0.0:5533->5432/tcp, [::]:5533->5432/tcp
+
+
+[2026-04-21T09:33:32.948827Z] NAME                IMAGE             COMMAND                  SERVICE    CREATED             STATUS                 PORTS
+docker-blog-api-1   docker-blog-api   "dotnet Blog.Api.dll"    blog-api   About an hour ago   Up About an hour       0.0.0.0:5501->8080/tcp, 0.0.0.0:5502->8080/tcp, [::]:5501->8080/tcp, [::]:5502->8080/tcp
+docker-postgres-1   postgres:16       "docker-entrypoint.s…"   postgres   2 hours ago         Up 2 hours (healthy)   0.0.0.0:5533->5432/tcp, [::]:5533->5432/tcp
+
+
+[2026-04-21T09:33:50.073514Z] NAME                IMAGE             COMMAND                  SERVICE    CREATED             STATUS                 PORTS
+docker-blog-api-1   docker-blog-api   "dotnet Blog.Api.dll"    blog-api   About an hour ago   Up About an hour       0.0.0.0:5501->8080/tcp, 0.0.0.0:5502->8080/tcp, [::]:5501->8080/tcp, [::]:5502->8080/tcp
+docker-postgres-1   postgres:16       "docker-entrypoint.s…"   postgres   2 hours ago         Up 2 hours (healthy)   0.0.0.0:5533->5432/tcp, [::]:5533->5432/tcp
+
+
+[2026-04-21T09:33:56.223869Z] 
+ Container docker-blog-api-1 Stopping 
+ Container docker-blog-api-1 Stopped 
+ Container docker-blog-api-1 Removing 
+ Container docker-blog-api-1 Removed 
+ Container docker-postgres-1 Stopping 
+ Container docker-postgres-1 Stopped 
+ Container docker-postgres-1 Removing 
+ Container docker-postgres-1 Removed 
+ Network docker_default Removing 
+ Network docker_default Removed 
+
+[2026-04-21T09:34:07.245386Z] 
+ Network docker_default Creating 
+ Network docker_default Created 
+time="2026-04-21T11:34:01+02:00" level=warning msg="Found orphan containers ([docker-python-observer-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container docker-postgres-1 Creating 
+ Container docker-postgres-1 Created 
+ Container docker-blog-api-1 Creating 
+ Container docker-blog-api-1 Created 
+ Container docker-postgres-1 Starting 
+ Container docker-postgres-1 Started 
+ Container docker-postgres-1 Waiting 
+ Container docker-postgres-1 Healthy 
+ Container docker-blog-api-1 Starting 
+ Container docker-blog-api-1 Started 
+
+[2026-04-21T09:37:55.223163Z] NAME                IMAGE             COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+docker-blog-api-1   docker-blog-api   "dotnet Blog.Api.dll"    blog-api   3 minutes ago   Up 3 minutes             0.0.0.0:5501->8080/tcp, 0.0.0.0:5502->8080/tcp, [::]:5501->8080/tcp, [::]:5502->8080/tcp
+docker-postgres-1   postgres:16       "docker-entrypoint.s…"   postgres   3 minutes ago   Up 3 minutes (healthy)   0.0.0.0:5533->5432/tcp, [::]:5533->5432/tcp
+
+
+[2026-04-21T09:38:40.960559Z] NAME                IMAGE             COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+docker-blog-api-1   docker-blog-api   "dotnet Blog.Api.dll"    blog-api   4 minutes ago   Up 4 minutes             0.0.0.0:5501->8080/tcp, 0.0.0.0:5502->8080/tcp, [::]:5501->8080/tcp, [::]:5502->8080/tcp
+docker-postgres-1   postgres:16       "docker-entrypoint.s…"   postgres   4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:5533->5432/tcp, [::]:5533->5432/tcp
+
+

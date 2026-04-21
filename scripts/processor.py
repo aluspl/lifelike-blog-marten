@@ -4,9 +4,9 @@ import os
 import json
 
 def main():
-    # Defaults adjusted for host-side execution (mapped port 5433)
+    # Defaults adjusted for host-side execution (mapped port 5533)
     db_host = os.environ.get("DB_HOST", "localhost")
-    db_port = os.environ.get("DB_PORT", "5433")
+    db_port = os.environ.get("DB_PORT", "5533")
     db_name = os.environ.get("DB_NAME", "marten")
     db_user = os.environ.get("DB_USER", "postgres")
     db_pass = os.environ.get("DB_PASS", "postgres")
@@ -33,7 +33,7 @@ def main():
             time.sleep(10)
         except Exception as e:
             print(f"[DATABASE ERROR] {e}")
-            print("Is Docker environment running? (check ports 5433)")
+            print("Is Docker environment running? (check ports 5533)")
             time.sleep(5)
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
 - `src/Blog.Api`: Web API w .NET 10 korzystające z Martena do zapisu zdarzeń i odczytu projekcji.
 
 ### Narzędzia (Tooling)
+- `cli.sh`: Główny punkt wejścia — tworzy venv, instaluje zależności i uruchamia tester.
 - `scripts/tester.py`: Zaawansowany, interaktywny i skryptowalny CLI tester do weryfikacji całego flow API (obsługuje orchestrację Docker Compose).
 - `scripts/processor.py`: Skrypt demonstracyjny **Polyglot Persistence** — bezpośrednio obserwuje tabele Martena w PostgreSQL i loguje stan projekcji (uruchamiany lokalnie).
 
@@ -34,16 +35,16 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
    docker compose up --build
    ```
 
-2. Dokumentacja API (Scalar) będzie dostępna pod adresem: `http://localhost:5001/scalar/v1`
+2. Dokumentacja API (Scalar) będzie dostępna pod adresem: `http://localhost:5501/scalar/v1`
 
 3. Tester CLI (interaktywny):
    ```bash
-   python3 scripts/tester.py
+   ./cli.sh
    ```
 
 4. Automatyczny test całego flow (Orchestration):
    ```bash
-   python3 scripts/tester.py --action run-all --api-url http://localhost:5001
+   ./cli.sh --action run-all
    ```
 
 5. Podgląd bazy Martena przez skrypt Python:
@@ -51,38 +52,54 @@ W systemie blogowym zdefiniowaliśmy następujące zdarzenia (Events):
    python3 scripts/processor.py
    ```
 
+> `cli.sh` automatycznie tworzy wirtualne środowisko Python (`.venv`) i instaluje zależności przy pierwszym uruchomieniu.
+
+## Dostępne akcje CLI
+
+```bash
+./cli.sh                            # tryb interaktywny (menu)
+./cli.sh --action health            # healthcheck API
+./cli.sh --action list-posts        # lista wpisów
+./cli.sh --action run-all           # pełny scenariusz E2E
+./cli.sh --action run-all --no-teardown   # E2E bez zatrzymania compose
+./cli.sh --action compose-logs      # logi docker-compose
+./cli.sh --action compose-up        # uruchom środowisko docker-compose
+./cli.sh --action compose-down      # zatrzymaj środowisko docker-compose
+./cli.sh --action run-scenario      # uruchom scenariusz z pliku YAML
+```
+
 ## Przykład użycia (cURL)
 
 **Utworzenie posta:**
 ```bash
-curl -X POST http://localhost:5001/posts \
+curl -X POST http://localhost:5501/posts \
      -H "Content-Type: application/json" \
      -d '{"title": "Pierwszy post", "content": "Witaj Marten!", "author": "Szymon"}'
 ```
 
 **Aktualizacja posta:**
 ```bash
-curl -X PUT http://localhost:5001/posts/{GUID} \
+curl -X PUT http://localhost:5501/posts/{GUID} \
      -H "Content-Type: application/json" \
      -d '{"title": "Zmieniony tytuł", "content": "Nowa treść"}'
 ```
 
 **Opublikowanie posta:**
 ```bash
-curl -X POST http://localhost:5001/posts/{GUID}/publish
+curl -X POST http://localhost:5501/posts/{GUID}/publish
 ```
 
 **Cofnięcie publikacji:**
 ```bash
-curl -X POST http://localhost:5001/posts/{GUID}/unpublish
+curl -X POST http://localhost:5501/posts/{GUID}/unpublish
 ```
 
 **Pobranie szczegółów:**
 ```bash
-curl http://localhost:5001/posts/{GUID}
+curl http://localhost:5501/posts/{GUID}
 ```
 
 **Rebuild projekcji (Admin):**
 ```bash
-curl -X POST http://localhost:5001/admin/rebuild
+curl -X POST http://localhost:5501/admin/rebuild
 ```

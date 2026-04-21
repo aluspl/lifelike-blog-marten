@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"
+      - "5533:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -21,8 +21,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Postgres=Host=postgres;Database=marten;Username=postgres;Password=postgres
     ports:
-      - "5001:8080"
-      - "5002:8080"
+      - "5501:8080"
+      - "5502:8080"
     depends_on:
       postgres:
         condition: service_healthy
